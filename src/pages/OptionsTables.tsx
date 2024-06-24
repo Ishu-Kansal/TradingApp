@@ -1,10 +1,11 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import Button from "@mui/material/Button/Button";
 import TextField from "@mui/material/TextField/TextField";
-import React, { useState } from "react";
+import { useState } from "react";
 import OptionsTable from "../components/OptionsTable";
+import "../styles/OptionsTables.css";
 
-function Home() {
+function OptionsTables() {
   const handleSearchStock = async () => {
     const dataIn = { symbol: inputTicker };
 
@@ -68,36 +69,57 @@ function Home() {
 
   return (
     <div className="home">
-      <TextField
-        id="outlined-basic"
-        label="Enter Ticker: "
-        variant="outlined"
-        onChange={(e) => setInputTicker(e.target.value)}
-      />
-      <Button
-        variant="contained"
-        onClick={function () {
-          handleSearchStock();
-          handleSearchOptions();
-        }}
-      >
-        Submit
-      </Button>
+      <span>
+        <Button variant="contained" href="/">
+          Back Home
+        </Button>
+      </span>
 
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Expiration Dates</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          label="Age"
-          onChange={(e: any) => setInputExp(e.target.value)}
+      <span>
+        <TextField
+          id="outlined-basic"
+          label="Enter Ticker: "
+          variant="outlined"
+          onChange={(e) => setInputTicker(e.target.value)}
+        />
+      </span>
+      <span>
+        <Button
+          variant="contained"
+          onClick={function () {
+            handleSearchStock();
+            handleSearchOptions();
+          }}
         >
-          {newList}
-        </Select>
-      </FormControl>
-      <Button variant="contained" onClick={handleSearchOptions}>
-        Submit Expiration
-      </Button>
+          Submit
+        </Button>
+      </span>
+
+      <span>
+        <FormControl
+          style={{
+            minWidth: 200,
+          }}
+        >
+          <InputLabel id="demo-simple-select-label">
+            Expiration Dates
+          </InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Age"
+            onChange={(e: any) => setInputExp(e.target.value)}
+          >
+            {newList}
+          </Select>
+        </FormControl>
+      </span>
+      <span>
+        <Button variant="contained" onClick={handleSearchOptions}>
+          Submit Expiration
+        </Button>
+      </span>
+
       <h1>Calls:</h1>
       <div className="optionsTableCalls">
         <OptionsTable data={callsList} />
@@ -110,4 +132,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default OptionsTables;
