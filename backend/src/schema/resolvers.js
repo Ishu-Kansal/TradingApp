@@ -4,7 +4,7 @@ import GraphQLDate from "graphql-date";
 const resolvers = {
   DateTime: GraphQLDate,
   Query: {
-    getAllBids: (parent, args) => {
+    allBids: () => {
       try {
         const bids = db.any(
           `SELECT * FROM public."Orders" WHERE type_ask = false`
@@ -15,7 +15,7 @@ const resolvers = {
       }
     },
 
-    getAllBidsActive: (parent, args) => {
+    allBidsActive: () => {
       try {
         const bids = db.any(
           `SELECT * FROM public."Orders" WHERE type_ask = false AND status=0`
@@ -26,7 +26,7 @@ const resolvers = {
       }
     },
 
-    getAllAsks: (parent, args) => {
+    allAsks: () => {
       try {
         const asks = db.any(
           `SELECT * FROM public."Orders" WHERE type_ask = true`
@@ -37,7 +37,7 @@ const resolvers = {
       }
     },
 
-    getAllAsksActive: (parent, args) => {
+    allAsksActive: () => {
       try {
         const asks = db.any(
           `SELECT * FROM public."Orders" WHERE type_ask = true AND status=0`
@@ -48,7 +48,7 @@ const resolvers = {
       }
     },
 
-    getAllOrders: (parent, args) => {
+    allOrders: () => {
       try {
         const orders = db.any(`SELECT * FROM public."Orders"`);
         return orders;
@@ -57,7 +57,7 @@ const resolvers = {
       }
     },
 
-    getBidsDesc: (parent, args) => {
+    bidsDesc: () => {
       try {
         const bids = db.any(
           `SELECT * FROM public."Orders" WHERE type_ask = false AND status=0 ORDER BY limit_price DESC`
@@ -68,7 +68,7 @@ const resolvers = {
       }
     },
 
-    getAsksAsc: (parent, args) => {
+    asksAsc: () => {
       try {
         const asks = db.any(
           `SELECT * FROM public."Orders" WHERE type_ask = true AND status=0 ORDER BY limit_price ASC`
@@ -79,7 +79,7 @@ const resolvers = {
       }
     },
 
-    getOrder: (parent, args) => {
+    order: (args) => {
       try {
         const order = db.any(
           `SELECT * FROM public."Orders" WHERE id= ${args.id}`
@@ -90,7 +90,7 @@ const resolvers = {
       }
     },
 
-    getBidsByStockID: (parent, args) => {
+    bidsByStockID: (args) => {
       try {
         const bids = db.any(
           `SELECT * FROM public."Orders" WHERE type_ask = false AND status=0 AND stock_id= ${args.stock_id}`
@@ -101,7 +101,7 @@ const resolvers = {
       }
     },
 
-    getAsksByStockID: (parent, args) => {
+    asksByStockID: (args) => {
       try {
         const asks = db.any(
           `SELECT * FROM public."Orders" WHERE type_ask = true AND status=0 AND stock_id= ${args.stock_id}`
@@ -126,6 +126,18 @@ const resolvers = {
            VALUES (${args.user_id},${args.stock_id}, ${args.quantity}, ${args.limit_price}, ${args.status}, ${args.type_ask})`
         );
         return args;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+
+    deleteOrder: (args) => {
+      try {
+        const deletedOrder = db.any(
+          `SELECT * FROM public."Orders" WHERE id = ${args.id}`
+        );
+        db.any(`DELETE FROM public."Orders" WEHRE id = ${args.id}`);
+        return deletedOrder;
       } catch (err) {
         console.log(err);
       }

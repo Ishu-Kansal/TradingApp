@@ -15,21 +15,21 @@ const typeDefs = gql`
   }
 
   type Query {
-    getAllBids: [Order]
-    getAllAsks: [Order]
+    allBids: [Order]
+    allAsks: [Order]
 
-    getAllBidsActive: [Order]
-    getAllAsksActive: [Order]
+    allBidsActive: [Order]
+    allAsksActive: [Order]
 
-    getAllOrders: [Order]
+    allOrders: [Order]
 
-    getBidsDesc: [Order]
-    getAsksAsc: [Order]
+    bidsDesc: [Order]
+    asksAsc: [Order]
 
-    getOrder(id: ID!): Order
+    order(id: ID!): Order
 
-    getBidsByStockID(stock_id: Int!): [Order]
-    getAsksByStockID(stock_id: Int!): [Order]
+    bidsByStockID(stock_id: Int!): [Order]
+    asksByStockID(stock_id: Int!): [Order]
   }
 
   type Mutation {

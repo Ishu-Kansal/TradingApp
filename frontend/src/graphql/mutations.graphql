@@ -1,0 +1,38 @@
+mutation createOrderNoChecks(
+  $userId: Int!
+  $stockId: Int!
+  $quantity: Int!
+  $limitPrice: Float!
+  $status: Int!
+  $typeAsk: Boolean!
+) {
+  createOrderPopulate(
+    user_id: $userId
+    stock_id: $stockId
+    quantity: $quantity
+    limit_price: $limitPrice
+    status: $status
+    type_ask: $typeAsk
+  ) {
+    user_id
+    stock_id
+    quantity
+    limit_price
+    status
+    type_ask
+  }
+}
+
+query GetAllOrders {
+  allOrders {
+    id
+    user_id
+    stock_id
+    quantity
+    limit_price
+    status
+    created_at
+    updated_at
+    type_ask
+  }
+}
