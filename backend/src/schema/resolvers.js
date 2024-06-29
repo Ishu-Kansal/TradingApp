@@ -51,6 +51,7 @@ const resolvers = {
     allOrders: () => {
       try {
         const orders = db.any(`SELECT * FROM public."Orders"`);
+        console.log("Running....");
         return orders;
       } catch (err) {
         console.log(err);
@@ -115,20 +116,26 @@ const resolvers = {
 
   Mutation: {
     createOrderPopulate: (parent, args) => {
-      try {
-        const createdOrder = db.any(
-          `INSERT INTO public."Orders" (user_id, 
+      let id, created_at, updated_at;
+      const createdOrder = db.any(
+        `INSERT INTO public."Orders" (user_id, 
           stock_id,
           quantity,
           limit_price,
           status,
           type_ask)
-           VALUES (${args.user_id},${args.stock_id}, ${args.quantity}, ${args.limit_price}, ${args.status}, ${args.type_ask})`
-        );
-        return args;
-      } catch (err) {
-        console.log(err);
-      }
+          VALUES (${args.user_id},${args.stock_id}, ${args.quantity}, ${args.limit_price}, ${args.status}, ${args.type_ask})
+          RETURNING id, created_at, updated_at;`
+      );
+      const newVal = createdOrder.then((data) => {
+        id = data[0].id;
+        created_at = data[0].created_at;
+        updated_at = data[0].updated_at;
+        console.log(data);
+        return parseInt(id);
+      });
+      console.log("ret id: ", id);
+      return newVal;
     },
 
     deleteOrder: (args) => {

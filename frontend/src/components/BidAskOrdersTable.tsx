@@ -18,6 +18,7 @@ function BidAskOrdersTable(rows) {
           <TableCell>Quantity</TableCell>
           <TableCell>Limit Price</TableCell>
           <TableCell>Status</TableCell>
+          <TableCell>Type</TableCell>
           <TableCell>Created At</TableCell>
           <TableCell>Updated At</TableCell>
         </TableRow>
@@ -31,6 +32,7 @@ function BidAskOrdersTable(rows) {
             <TableCell>{row.quantity}</TableCell>
             <TableCell>{row.limit_price}</TableCell>
             <TableCell>{row.status}</TableCell>
+            <TableCell>{row.type_ask ? "Ask" : "Buy"}</TableCell>
             <TableCell>{row.created_at}</TableCell>
             <TableCell>{row.updated_at}</TableCell>
           </TableRow>

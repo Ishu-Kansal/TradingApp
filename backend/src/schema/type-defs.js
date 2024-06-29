@@ -9,8 +9,8 @@ const typeDefs = gql`
     quantity: Int
     limit_price: Float
     status: Int
-    created_at: DateTime!
-    updated_at: DateTime!
+    created_at: DateTime
+    updated_at: DateTime
     type_ask: Boolean!
   }
 
@@ -40,7 +40,7 @@ const typeDefs = gql`
       limit_price: Float!
       status: Int!
       type_ask: Boolean!
-    ): Order!
+    ): ID!
 
     deleteOrder(id: ID!): Order
   }
