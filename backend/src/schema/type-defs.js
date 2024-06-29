@@ -12,6 +12,7 @@ const typeDefs = gql`
     created_at: DateTime
     updated_at: DateTime
     type_ask: Boolean!
+    quantity_sat: Int
   }
 
   type Query {
@@ -34,6 +35,15 @@ const typeDefs = gql`
 
   type Mutation {
     createOrderPopulate(
+      user_id: Int!
+      stock_id: Int!
+      quantity: Int!
+      limit_price: Float!
+      status: Int!
+      type_ask: Boolean!
+    ): ID!
+
+    createOrderFulfill(
       user_id: Int!
       stock_id: Int!
       quantity: Int!

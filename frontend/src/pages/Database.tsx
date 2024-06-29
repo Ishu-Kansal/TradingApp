@@ -6,7 +6,7 @@ import BidAskOrdersTable from "../components/BidAskOrdersTable";
 
 function Database() {
   const { data } = useQuery(GetAllOrders, {
-    pollInterval: 5000,
+    //pollInterval: 5000,
   });
   if (data) {
     console.log(data);

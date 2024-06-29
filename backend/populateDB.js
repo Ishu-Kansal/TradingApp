@@ -12,7 +12,9 @@ function genRandomDecimal(min) {
   return min + Math.round(Math.random() * precision) / precision;
 }
 
-for (let i = 0; i < 10; i++) {
+const numcount = 5;
+
+for (let i = 0; i < numcount; i++) {
   request(
     endpoint,
     `mutation CreateOrderPopulate($userId: Int!, $stockId: Int!, $quantity: Int!, $limitPrice: Float!, $status: Int!, $typeAsk: Boolean!) {
@@ -31,7 +33,7 @@ for (let i = 0; i < 10; i++) {
     .catch((err) => console.log(err));
 }
 
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < numcount; i++) {
   request(
     endpoint,
     `mutation CreateOrderPopulate($userId: Int!, $stockId: Int!, $quantity: Int!, $limitPrice: Float!, $status: Int!, $typeAsk: Boolean!) {
