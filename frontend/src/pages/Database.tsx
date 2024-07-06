@@ -13,7 +13,7 @@ function Database() {
   }
   return (
     <div>
-      <div>{data && <BidAskOrdersTable rows={data} />}</div>
+      {data && <BidAskOrdersTable rows={data} />}
 
       {/* {data &&
         data.allOrders.map((order) => {

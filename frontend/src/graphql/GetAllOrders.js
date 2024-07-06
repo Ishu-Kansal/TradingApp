@@ -12,6 +12,7 @@ export var GetAllOrders = gql`
       created_at
       updated_at
       type_ask
+      quantity_sat
     }
   }
 `;

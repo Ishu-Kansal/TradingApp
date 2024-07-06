@@ -9,12 +9,11 @@ export async function GetSelection(args) {
     args.type_ask ? "DESC" : "ASC"
   }`;
 
+  console.log(queryParams);
+
   const selectPromise = db.any(queryParams);
 
-  const listReturned = await selectPromise.then((data) => {
-    console.log(data);
-    return data;
-  });
+  const listReturned = await selectPromise;
 
   return listReturned;
 }
