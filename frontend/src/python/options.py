@@ -91,6 +91,7 @@ def get_options_exp():
     symbol = data['symbol']
     stock = yf.Ticker(symbol)
     exps = stock.options
+    
     print(type(exps))
     app.logger.info(exps)
     return json.dumps({'exps':exps})
@@ -101,6 +102,14 @@ def options_calls():
     data = request.get_json()
     symbol = data['symbol']
     exp_date = data['exp_date']
+    
+    if(not exp_date):
+        
+        stock = yf.Ticker(symbol)
+        exps = stock.options
+        exp_date = exps[0]
+
+    
     app.logger.info(symbol, "    ", exp_date)
 
     tk = yf.Ticker(symbol)
@@ -114,6 +123,14 @@ def options_puts():
     data = request.get_json()
     symbol = data['symbol']
     exp_date = data['exp_date']
+    
+    
+    if(not exp_date):
+        stock = yf.Ticker(symbol)
+        exps = stock.options
+        exp_date = exps[0]
+
+        
     app.logger.info(symbol, "    ", exp_date)
 
     tk = yf.Ticker(symbol)

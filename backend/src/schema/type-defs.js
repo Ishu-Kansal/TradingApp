@@ -48,7 +48,6 @@ const typeDefs = gql`
       stock_id: Int!
       quantity: Int!
       limit_price: Float!
-      status: Int!
       type_ask: Boolean!
     ): ID!
 

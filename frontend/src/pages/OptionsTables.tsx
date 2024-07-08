@@ -18,6 +18,7 @@ function OptionsTables() {
       .then((responseJSON) => {
         console.log(responseJSON);
         setExpList(responseJSON.exps);
+        setInputExp(responseJSON.exps[0]);
         return responseJSON;
       })
       .catch((error) => {
@@ -59,8 +60,8 @@ function OptionsTables() {
       });
   };
 
-  const [inputTicker, setInputTicker] = useState(" ");
-  const [inputExp, setInputExp] = useState(" ");
+  const [inputTicker, setInputTicker] = useState("");
+  const [inputExp, setInputExp] = useState("");
   const [expList, setExpList] = useState([]);
   const [callsList, setCallsList] = useState([]);
   const [putsList, setPutsList] = useState([]);
