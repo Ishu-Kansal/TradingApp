@@ -245,7 +245,11 @@ const resolvers = {
           limit_price,
           status,
           type_ask, quantity_sat)
-          VALUES (${args.user_id},${args.stock_id}, ${args.quantity}, ${args.limit_price}, 1, ${args.type_ask}, ${quantitySatisfied})
+          VALUES (${args.user_id},${args.stock_id}, ${args.quantity}, ${
+            args.limit_price
+          }, ${quantitySatisfied == 0 ? 0 : 1}, ${
+            args.type_ask
+          }, ${quantitySatisfied})
           RETURNING id, created_at, updated_at;`
         );
         console.log(

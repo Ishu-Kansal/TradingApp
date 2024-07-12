@@ -102,7 +102,6 @@ function OrderForm() {
           <Form.Item name="limit_price" label="Limit Price">
             <InputNumber
               style={{ width: 200 }}
-              defaultValue={0}
               min={0}
               precision={2}
               step={0.01}
