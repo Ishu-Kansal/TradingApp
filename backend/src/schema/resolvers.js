@@ -1,6 +1,7 @@
 import db from "../../pgAdaptor.js";
 import GraphQLDate from "graphql-date";
 import { GetSelection } from "./helpers.js";
+import moment from "moment/moment.js";
 
 const resolvers = {
   DateTime: GraphQLDate,
@@ -175,6 +176,13 @@ const resolvers = {
               }
               WHERE id = ${data[currIndex].id}`);
 
+          await db.none(`INSERT INTO public."FulfilledOrders" (stock_id, buyer_id, seller_id, quantity, price) VALUES (${
+            args.stock_id
+          }, ${args.type_ask ? data[currIndex].user_id : args.user_id}, 
+            ${args.type_ask ? args.user_id : data[currIndex].user_id}, ${
+            args.quantity - quantitySatisfied
+          }, ${data[currIndex].limit_price})`);
+
           console.log(
             "partially fulfilled existing order 1",
             JSON.stringify(listUpdate)
@@ -208,6 +216,15 @@ const resolvers = {
             WHERE id = ${data[currIndex].id}`);
           console.log("partially fulfilled existing order 2", listUpdate);
 
+          await db.none(`INSERT INTO public."FulfilledOrders" (stock_id, buyer_id, seller_id, quantity, price) VALUES (${
+            args.stock_id
+          }, ${args.type_ask ? data[currIndex].user_id : args.user_id}, 
+            ${args.type_ask ? args.user_id : data[currIndex].user_id}, ${
+            args.quantity - quantitySatisfied
+          }, ${data[currIndex].limit_price}, ${moment().format(
+            "YYYY-MM-DD HH:mm:ss"
+          )})`);
+
           const insertedOrderFulfilled = await db.any(
             `INSERT INTO public."Orders" (user_id,
                 stock_id,
@@ -227,6 +244,15 @@ const resolvers = {
           const listUpdate =
             await db.any(`UPDATE public."Orders" SET status = 2, quantity_sat = ${data[currIndex].quantity}
               WHERE id = ${data[currIndex].id}`);
+
+          await db.none(`INSERT INTO public."FulfilledOrders" (stock_id, buyer_id, seller_id, quantity, price) VALUES (${
+            args.stock_id
+          }, ${args.type_ask ? data[currIndex].user_id : args.user_id}, 
+                ${args.type_ask ? args.user_id : data[currIndex].user_id}, ${
+            data[currIndex].quantity
+          }, ${data[currIndex].limit_price}, ${moment().format(
+            "YYYY-MM-DD HH:mm:ss"
+          )})`);
 
           console.log("fully fulfilled existing order", listUpdate);
 
