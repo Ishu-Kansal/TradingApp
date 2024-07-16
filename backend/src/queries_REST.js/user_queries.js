@@ -1,5 +1,6 @@
 import db from "../../pgAdaptor.js";
 import bcrypt, { genSalt } from "bcrypt";
+import { createTokens, validateTokens } from "../JWT.js";
 
 export async function getUsers(req, res) {
   try {
@@ -34,8 +35,7 @@ export async function getUser(req, res) {
 }
 
 export async function createUser(req, res) {
-  const salt = await bcrypt.genSalt(10);
-  const password = await bcrypt.hash(req.body.password, salt);
+  const password = await bcrypt.hash(req.body.password, 10);
 
   try {
     const existingUsers = await db.any(
@@ -87,9 +87,18 @@ export async function validateUser(req, res) {
               message: "oops! something went wrong",
             });
           } else if (responseCrypt) {
+            const user = {
+              id: userDetails[0].user_id,
+              username: userDetails[0].username,
+            };
+            const accessToken = createTokens(user);
+            res.cookie("basic-access-token", accessToken, {
+              maxAge: 1000 * 60 * 60 * 24,
+            });
+            res.json({ auth: true, token: accessToken });
             res.status(200).json({
               status: "success",
-              data: req.body.username,
+              data: user,
               message: "login successful!",
             });
           } else {
@@ -104,5 +113,16 @@ export async function validateUser(req, res) {
     }
   } catch (err) {
     console.log(err);
+  }
+}
+
+export async function profile(req, res) {
+  try {
+  } catch (error) {
+    res.status(400).json({
+      status: "profile-error",
+      data: error,
+      message: "error fetching profile",
+    });
   }
 }

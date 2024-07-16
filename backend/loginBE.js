@@ -1,7 +1,7 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 import pkg from "body-parser";
 const { json, urlencoded } = pkg;
-const app = express();
 import { getBids, getOrder } from "./src/queries_REST.js/bidAsk_queries.js";
 import {
   getUsers,
@@ -9,6 +9,9 @@ import {
   getUser,
   validateUser,
 } from "./src/queries_REST.js/user_queries.js";
+
+const app = express();
+
 const port = 4500;
 
 app.use(json());
@@ -17,6 +20,7 @@ app.use(
     extended: true,
   })
 );
+app.use(cookieParser());
 
 app.get("/", (request, response) => {
   response.json({ info: "Node.js, Express, and Postgres API" });
