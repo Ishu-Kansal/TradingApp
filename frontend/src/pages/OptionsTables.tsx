@@ -71,7 +71,7 @@ function OptionsTables() {
   return (
     <div className="home">
       <span>
-        <Button variant="contained" href="/">
+        <Button variant="contained" href="/home">
           Back Home
         </Button>
       </span>

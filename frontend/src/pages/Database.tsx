@@ -5,19 +5,36 @@ import GetAllOrders from "../graphql/GetAllOrders.ts";
 import BidAskOrdersTable from "../components/BidAskOrdersTable";
 import Button from "@mui/material/Button";
 import OrderForm from "../components/OrderForm.tsx";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 function Database() {
-  const { data } = useQuery(GetAllOrders, {
-    //pollInterval: 5000,
-  });
-  // if (data) {
-  //   console.log(data);
-  // }
-
+  const DB_URL = "http://localhost:4500/allorders";
+  const [data, setData] = useState([]);
+  // const { data } = useQuery(GetAllOrders, {
+  //   //pollInterval: 5000,
+  // });
+  // // if (data) {
+  // //   console.log(data);
+  // // }
+  useEffect(() => {
+    getData();
+  }, []);
+  function getData() {
+    axios({
+      url: DB_URL,
+      method: "GET",
+    })
+      .then((response) => {
+        setData(response.data.data);
+        console.log(response);
+      })
+      .catch((err) => console.log(err));
+  }
   return (
     <div className="Bid-Ask-Page">
       <div className="Buttons and Headers">
-        <Button href="\">Home</Button>
+        <Button href="/home">Home</Button>
         <OrderForm></OrderForm>
       </div>
       <div>
