@@ -7,13 +7,13 @@ import {
   allOrders,
   getBids,
   getOrder,
-} from "./src/queries_REST.js/bidAsk_queries.js";
+} from "./src/queries_REST/bidAsk_queries.js";
 import {
   getUsers,
   createUser,
   getUser,
   validateUser,
-} from "./src/queries_REST.js/user_queries.js";
+} from "./src/queries_REST/user_queries.js";
 
 const app = express();
 
