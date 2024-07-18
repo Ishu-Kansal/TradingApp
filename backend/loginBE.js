@@ -1,8 +1,13 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import pkg from "body-parser";
+import cors from "cors";
 const { json, urlencoded } = pkg;
-import { getBids, getOrder } from "./src/queries_REST.js/bidAsk_queries.js";
+import {
+  allOrders,
+  getBids,
+  getOrder,
+} from "./src/queries_REST.js/bidAsk_queries.js";
 import {
   getUsers,
   createUser,
@@ -14,6 +19,11 @@ const app = express();
 
 const port = 4500;
 
+let corsOptions = {
+  credentials: "true",
+  origin: ["http://localhost:4500", "http://localhost:5173"],
+  allowedHeaders: "*",
+};
 app.use(json());
 app.use(
   urlencoded({
@@ -22,12 +32,15 @@ app.use(
 );
 app.use(cookieParser());
 
+app.use(cors(corsOptions));
+
 app.get("/", (request, response) => {
   response.json({ info: "Node.js, Express, and Postgres API" });
 });
 
 app.get("/bids", getBids);
 app.get("/orders/:id", getOrder);
+app.get("/allorders", allOrders);
 
 /*Users routes */
 app.get("/users", getUsers);

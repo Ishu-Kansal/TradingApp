@@ -71,7 +71,7 @@ export async function allOrders(req, res, next) {
     );
     res.status(200).json({
       status: "success",
-      data: bids,
+      data: orders,
       message: "retrieved all bids",
     });
     console.log(orders);

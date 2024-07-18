@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 
 function BidAskOrdersTable(rows) {
-  console.log("rows: ", rows.rows.allOrders);
+  console.log("rows: ", rows);
   return (
     <TableContainer>
       <TableHead>
@@ -25,7 +25,7 @@ function BidAskOrdersTable(rows) {
         </TableRow>
       </TableHead>
       <TableBody>
-        {rows.rows.allOrders?.map((row) => (
+        {rows.rows.map((row) => (
           <TableRow key={row.id}>
             <TableCell>{row.id}</TableCell>
             <TableCell>{row.type_ask ? "Ask" : "Buy"}</TableCell>

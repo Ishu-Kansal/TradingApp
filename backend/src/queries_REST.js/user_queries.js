@@ -95,14 +95,13 @@ export async function validateUser(req, res) {
             res.cookie("basic-access-token", accessToken, {
               maxAge: 1000 * 60 * 60 * 24,
             });
-            res.json({ auth: true, token: accessToken });
             res.status(200).json({
               status: "success",
-              data: user,
+              data: { user, auth: true, token: accessToken },
               message: "login successful!",
             });
           } else {
-            res.status(400).json({
+            res.status(401).json({
               status: "failure",
               data: req.body.username,
               message: "passwords do not match",
