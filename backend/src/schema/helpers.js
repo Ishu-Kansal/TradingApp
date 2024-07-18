@@ -1,6 +1,7 @@
 import db from "../../pgAdaptor.js";
 
 export async function GetSelection(args) {
+  console.log(args);
   const queryParams = `SELECT * FROM public."Orders" WHERE stock_id = ${
     args.stock_id
   } AND type_ask = ${!args.type_ask} AND limit_price ${
@@ -9,11 +10,7 @@ export async function GetSelection(args) {
     args.type_ask ? "DESC" : "ASC"
   }`;
 
-  console.log(queryParams);
-
-  const selectPromise = db.any(queryParams);
-
-  const listReturned = await selectPromise;
+  const listReturned = await db.any(queryParams);
 
   return listReturned;
 }
