@@ -21,7 +21,7 @@ export async function getBids(req, res, next) {
 export function getAllBidsActive(req, res, next) {
   try {
     const bids = db.any(
-      `SELECT * FROM public."Orders" WHERE type_ask = false AND status=0`
+      `SELECT * FROM public."Orders" WHERE type_ask = false AND (status=0 OR status = 1) ORDER BY limit_price DESC`
     );
 
     res.status(200).json({
@@ -34,7 +34,23 @@ export function getAllBidsActive(req, res, next) {
   }
 }
 
-export function allAsks(req, res, next) {
+export async function getAllBidsActiveByStockID(req, res, next) {
+  try {
+    const bids = await db.any(
+      `SELECT * FROM public."Orders" WHERE type_ask = false AND stock_id = ${req.body.stock_id} AND (status=0 OR status = 1) ORDER BY limit_price DESC`
+    );
+
+    res.status(200).json({
+      status: "success",
+      data: bids,
+      message: "retrieved all active bids",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export function getAllAsks(req, res, next) {
   try {
     const asks = db.any(`SELECT * FROM public."Orders" WHERE type_ask = true`);
     res.status(200).json({
@@ -48,10 +64,26 @@ export function allAsks(req, res, next) {
   }
 }
 
-export function allAsksActive(req, res, next) {
+export function getAllAsksActive(req, res, next) {
   try {
     const asks = db.any(
-      `SELECT * FROM public."Orders" WHERE type_ask = true AND status=0`
+      `SELECT * FROM public."Orders" WHERE type_ask = true AND (status=0 OR status = 1) ORDER BY limit_price ASC`
+    );
+    res.status(200).json({
+      status: "success",
+      data: asks,
+      message: "retrieved all asks active",
+    });
+    return asks;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function getAllAsksActiveByStockID(req, res, next) {
+  try {
+    const asks = await db.any(
+      `SELECT * FROM public."Orders" WHERE type_ask = true AND stock_id = ${req.body.stock_id} AND (status=0 OR status = 1) ORDER BY limit_price ASC`
     );
     res.status(200).json({
       status: "success",
@@ -102,6 +134,7 @@ export async function getOrder(req, res, next) {
 }
 
 export async function createOrderFulfill(req, res) {
+  const startTime = performance.now();
   let createdID = -1;
   let newTransaction = -1;
   let transactionsCreated = [];
@@ -243,5 +276,150 @@ export async function createOrderFulfill(req, res) {
     console.log("created partially fulfilled order", insertedOrderFulfilled);
     createdID = insertedOrderFulfilled[0].id;
   }
+  const endTime = performance.now();
+
+  console.log(`/*Runtime:  ${endTime - startTime} milliseconds  */`);
+  res.status(200).json({ createdID, transactions: transactionsCreated });
+}
+
+export async function createOrderFulfillParallel(req, res) {
+  const startTime = performance.now();
+  let createdID = -1;
+  let newTransaction = -1;
+  let transactionsCreated = [];
+  console.log("body: ", req.body, "\n\n\n");
+
+  const data = await GetSelection(req.body);
+
+  const promisesToResolve = [];
+
+  let quantitySatisfied = 0;
+  var currIndex = 0;
+  console.log(0);
+  console.log(data);
+  console.log(1);
+  while (quantitySatisfied < req.body.quantity && currIndex < data.length) {
+    console.log("quant sat: ", quantitySatisfied);
+    console.log("curr idx: ", data[currIndex]);
+    //     //full satisfaction by index currIndex
+    if (
+      data[currIndex].quantity - data[currIndex].quantity_sat >=
+      req.body.quantity - quantitySatisfied
+    ) {
+      const bothFilled =
+        data[currIndex].quantity - data[currIndex].quantity_sat ==
+        req.body.quantity - quantitySatisfied;
+      //       //list order is partially filled
+      const listUpdate = db.any(`UPDATE public."Orders" SET status = ${
+        bothFilled ? 2 : 1
+      },
+              quantity_sat = ${
+                data[currIndex].quantity_sat +
+                (req.body.quantity - quantitySatisfied)
+              }
+              WHERE id = ${data[currIndex].id}`);
+      promisesToResolve.push(listUpdate);
+
+      newTransaction =
+        db.any(`INSERT INTO public."FulfilledOrders" (stock_id, buyer_id, seller_id, quantity, price) VALUES (${
+          req.body.stock_id
+        }, ${req.body.type_ask ? data[currIndex].user_id : req.body.user_id}, 
+            ${
+              req.body.type_ask ? req.body.user_id : data[currIndex].user_id
+            }, ${req.body.quantity - quantitySatisfied}, ${
+          data[currIndex].limit_price
+        }) RETURNING id`);
+      transactionsCreated.push(newTransaction);
+      promisesToResolve.push(newTransaction);
+
+      console.log(
+        "partially fulfilled existing order 1",
+        JSON.stringify(listUpdate)
+      );
+
+      //       //inserted order is fully filled
+      const insertedOrderFulfilled = db
+        .any(
+          `INSERT INTO public."Orders" (user_id,
+              stock_id,
+              quantity,
+              limit_price,
+              status,
+              type_ask, quantity_sat)
+              VALUES (${req.body.user_id},${req.body.stock_id}, ${req.body.quantity}, ${req.body.limit_price}, 2, ${req.body.type_ask}, ${req.body.quantity})
+              RETURNING id, created_at, updated_at;`
+        )
+        .then((ret) => {
+          console.log("created fulfilled order", ret);
+          createdID = ret[0].id;
+        });
+      promisesToResolve.push(insertedOrderFulfilled);
+
+      quantitySatisfied = req.body.quantity;
+    }
+
+    //partial satisfaction by index currIndex
+    else {
+      const listUpdate = db
+        .any(
+          `UPDATE public."Orders" SET status = 2, quantity_sat = ${data[currIndex].quantity}
+              WHERE id = ${data[currIndex].id}`
+        )
+        .then((ret) => {
+          console.log("fully fulfilled existing order", ret);
+        });
+      promisesToResolve.push(listUpdate);
+      newTransaction = db
+        .any(
+          `INSERT INTO public."FulfilledOrders" (stock_id, buyer_id, seller_id, quantity, price) VALUES (${
+            req.body.stock_id
+          }, ${req.body.type_ask ? data[currIndex].user_id : req.body.user_id}, 
+            ${
+              req.body.type_ask ? req.body.user_id : data[currIndex].user_id
+            }, ${data[currIndex].quantity}, ${
+            data[currIndex].limit_price
+          }) RETURNING id`
+        )
+        .then((retVal) => {
+          transactionsCreated.push(retVal);
+        });
+
+      promisesToResolve.push(newTransaction);
+
+      quantitySatisfied +=
+        data[currIndex].quantity - data[currIndex].quantity_sat;
+    }
+
+    currIndex++;
+  }
+
+  if (currIndex == data.length && quantitySatisfied < req.body.quantity) {
+    const insertedOrderFulfilled = db
+      .any(
+        `INSERT INTO public."Orders" (user_id,
+          stock_id,
+          quantity,
+          limit_price,
+          status,
+          type_ask, quantity_sat)
+          VALUES (${req.body.user_id},${req.body.stock_id}, ${
+          req.body.quantity
+        }, ${req.body.limit_price}, ${quantitySatisfied == 0 ? 0 : 1}, ${
+          req.body.type_ask
+        }, ${quantitySatisfied})
+          RETURNING id, created_at, updated_at;`
+      )
+      .then((ret) => {
+        console.log("created partially fulfilled order", ret);
+        createdID = ret[0].id;
+      });
+
+    promisesToResolve.push(insertedOrderFulfilled);
+  }
+  const endTime = performance.now();
+
+  console.log(`/*Runtime:  ${endTime - startTime} milliseconds  */`);
+  const results = await Promise.all(promisesToResolve);
+  console.log("/*Results: ", results, "   */\n\n");
   res.status(200).json({ createdID, transactions: transactionsCreated });
 }
