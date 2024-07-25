@@ -1,0 +1,138 @@
+.navbar {
+  width: 100%;
+  height: 100px;
+  background-color: #020303;
+  display: flex;
+  flex-direction: row;
+}
+
+.navbar .leftSide {
+  flex: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 50px;
+  max-width: 30%;
+}
+
+.navbar .centerSide {
+  flex: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar a {
+  color: rgb(255, 255, 255);
+  text-decoration: none;
+  margin: 20px;
+  font-family: Ubuntu;
+  font-size: large;
+
+  font-feature-settings: "tnum" on, "lnum" on;
+  font-style: normal;
+  --ui-lib-typography-font-size: 16px;
+  font-size: large;
+  font-weight: 300;
+  --ui-lib-typography-line-height: 24px;
+  display: flex;
+  line-height: var(--ui-lib-typography-line-height);
+}
+
+.navbar .companyName {
+  color: rgb(60, 207, 153);
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: lighter;
+  font-size: 30px;
+  padding: 0;
+  min-height: 0;
+  min-width: 0;
+}
+
+.navbar .centerSide .navbarButton {
+  background-color: transparent;
+  border: none;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+}
+
+.navbar .centerSide svg {
+  font-size: 40px;
+}
+
+.navbar .rightSide {
+  flex: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar #open {
+  padding-left: 0px;
+}
+.navbar #open img {
+  display: none;
+}
+
+.navbar #close img {
+  display: inherit;
+}
+
+.navbar #open .hiddenLinks {
+  display: inherit;
+  margin-left: 30px;
+}
+
+.navbar #close .hiddenLinks {
+  display: none;
+}
+
+.navbar #open a {
+  width: 70px;
+  margin: 5px;
+}
+@media only screen and (max-width: 900px) {
+  .navbar .centerSide a {
+    width: 70px;
+  }
+  .navbar .leftSide {
+    padding-left: 50px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .navbar .centerSide a {
+    display: none;
+  }
+
+  .navbar .centerSide {
+    justify-content: flex-end;
+    padding-right: 50px;
+  }
+
+  .navbar .centerSide .navbarButton {
+    display: inherit;
+  }
+}
+
+@media only screen and (min-width: 600px) {
+  .navbar .centerSide .navbarButton {
+    display: none;
+  }
+
+  .hiddenLinks {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 600px) {
+  .navbar .centerSide .navbarButton {
+    display: none;
+  }
+
+  .hiddenLinks {
+    display: none;
+  }
+}

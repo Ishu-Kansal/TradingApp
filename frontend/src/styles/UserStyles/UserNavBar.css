@@ -1,0 +1,115 @@
+.navbar {
+  width: 100%;
+  height: 100px;
+  background-color: #020303;
+  display: flex;
+  flex-direction: row;
+}
+
+.navbar .leftSide {
+  flex: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 150px;
+}
+
+.navbar .rightSide {
+  flex: 50%;
+  height: 100%;
+  display: flex;
+  align-items: right;
+  justify-content: right;
+}
+
+.navbar a {
+  color: rgb(3, 172, 0);
+  text-decoration: none;
+  margin: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.navbar .companyName {
+  color: rgb(60, 207, 153);
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: lighter;
+}
+
+.navbar .rightSide .navbarButton {
+  background-color: transparent;
+  border: none;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+}
+
+.navbar .rightSide svg {
+  font-size: 40px;
+}
+
+.navbar #open {
+  padding-left: 0px;
+}
+.navbar #open img {
+  display: none;
+}
+
+.navbar #close img {
+  display: inherit;
+}
+
+.navbar #open .hiddenLinks {
+  display: inherit;
+  margin-left: 30px;
+}
+
+.navbar #close .hiddenLinks {
+  display: none;
+}
+
+.navbar #open a {
+  width: 70px;
+  margin: 5px;
+}
+@media only screen and (max-width: 900px) {
+  .navbar .rightSide a {
+    width: 70px;
+  }
+  .navbar .leftSide {
+    padding-left: 50px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .navbar .rightSide a {
+    display: none;
+  }
+
+  .navbar .rightSide {
+    justify-content: flex-end;
+    padding-right: 50px;
+  }
+
+  .navbar .rightSide .navbarButton {
+    display: inherit;
+  }
+}
+
+@media only screen and (min-width: 600px) {
+  .navbar .rightSide .navbarButton {
+    display: none;
+  }
+
+  .hiddenLinks {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 600px) {
+  .navbar .rightSide .navbarButton {
+    display: none;
+  }
+
+  .hiddenLinks {
+    display: none;
+  }
+}

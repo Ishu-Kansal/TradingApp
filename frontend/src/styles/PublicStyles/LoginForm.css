@@ -1,0 +1,32 @@
+.input-field {
+  box-sizing: border-box;
+  height: 50px;
+  width: 500px;
+  border: 1px solid #e6e6e6;
+  border-radius: 20px;
+  color: #333333;
+  font-size: 50px;
+}
+
+.login-header {
+  text-align: center;
+}
+
+.loginForm {
+  display: grid;
+  gap: 30px;
+  align-items: center;
+  justify-items: center;
+  margin: 50px;
+  position: absolute;
+  top: 50%;
+  left: 49%;
+  padding: 50px;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
+}
