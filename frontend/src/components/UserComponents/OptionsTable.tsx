@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import OptionsTableRow from "./OptionsTableRow.tsx";
 
-function OptionsTable({ data }) {
+function OptionsTable(props) {
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
     backgroundColor: "rgba(179, 255, 230, 0.85)",
     "&:last-child": {
@@ -38,7 +38,7 @@ function OptionsTable({ data }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) =>
+          {props.data.map((row) =>
             row.inTheMoney ? (
               <StyledTableRow
                 key={row.contractSymbol}
@@ -49,14 +49,14 @@ function OptionsTable({ data }) {
                   borderLeftWidth: "5px",
                 }}
               >
-                <OptionsTableRow row={row} />
+                <OptionsTableRow row={row} exp={props.exp} />
               </StyledTableRow>
             ) : (
               <TableRow
                 key={row.contractSymbol}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
-                <OptionsTableRow row={row} />
+                <OptionsTableRow row={row} exp={props.exp} />
               </TableRow>
             )
           )}

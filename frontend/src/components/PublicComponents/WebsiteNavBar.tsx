@@ -20,10 +20,10 @@ function WebsiteNavBar() {
     },
     backgroundColor: "#121619",
     width: "100px",
-    "border-top-left-radius": "15px",
-    "border-top-right-radius": "15px",
-    "border-bottom-left-radius": "15px",
-    "border-bottom-right-radius": "15px",
+    borderTopLeftRadius: "15px",
+    borderTopRightRadius: "15px",
+    borderBottomLeftRadius: "15px",
+    borderBottomRightRadius: "15px",
   };
 
   const startButtonStyle = {
@@ -35,19 +35,19 @@ function WebsiteNavBar() {
     },
     background: "linear-gradient(75deg, #00bce6, #2962ff 50.31%, #d500f9)",
     width: "150px",
-    "font-family":
+    fontFamily:
       'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif',
-    "font-style": "normal",
-    "font-size": "30px",
-    "font-weight": "1000",
-    "line-height": "24px",
+    fontStyle: "normal",
+    fontSize: "30px",
+    fontWeight: "1000",
+    lineHeight: "24px",
     color: "white",
-    "border-radius": "2em 20px 2.5em 0.2in",
-    "text-transform": "none",
+    borderRadius: "2em 20px 2.5em 0.2in",
+    textTransform: "none",
   };
 
   const companyButtonStyle = {
-    "text-transform": "none",
+    textTransform: "none",
   };
 
   return (

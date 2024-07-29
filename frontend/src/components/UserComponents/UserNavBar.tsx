@@ -19,10 +19,10 @@ function UserNavBar() {
     },
     backgroundColor: "#121619",
     width: "100px",
-    "border-top-left-radius": "15px",
-    "border-top-right-radius": "15px",
-    "border-bottom-left-radius": "15px",
-    "border-bottom-right-radius": "15px",
+    borderTopLeftRadius: "15px",
+    borderTopRightRadius: "15px",
+    borderBottomLeftRadius: "15px",
+    borderBottomRightRadius: "15px",
   };
 
   return (
@@ -35,6 +35,7 @@ function UserNavBar() {
           <Link to="/options-tables">Options Tables</Link>
           <Link to="/bid-ask-test">Bid-Ask Database</Link>
           <Link to="/portfolio">Portfolio</Link>
+          <Link to="/profit-calc">Options Profit Calculator</Link>
         </div>
       </div>
       <div className="rightSide">
@@ -42,6 +43,7 @@ function UserNavBar() {
         <Link to="/options-tables">Options Tables</Link>
         <Link to="/bid-ask-test">Bid-Ask Database</Link>
         <Link to="/portfolio">Portfolio</Link>
+        <Link to="/profit-calc">Options Profit Calculator</Link>
         <Button className="logoutButton" sx={logoutButtonStyle} href="/">
           Logout
         </Button>

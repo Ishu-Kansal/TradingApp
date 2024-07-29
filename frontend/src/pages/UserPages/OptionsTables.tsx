@@ -69,7 +69,7 @@ function OptionsTables() {
   const newList = expList.map((e) => <MenuItem value={e}>{e}</MenuItem>);
 
   return (
-    <div className="home">
+    <div className="options_tables">
       <span>
         <Button variant="contained" href="/home">
           Back Home
@@ -108,7 +108,7 @@ function OptionsTables() {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            label="Age"
+            label="Exp Date"
             onChange={(e: any) => setInputExp(e.target.value)}
           >
             {newList}
@@ -123,11 +123,11 @@ function OptionsTables() {
 
       <h1>Calls:</h1>
       <div className="optionsTableCalls">
-        <OptionsTable data={callsList} />
+        <OptionsTable data={callsList} exp={inputExp} />
       </div>
       <h1>Puts:</h1>
       <div className="optionsTablePuts">
-        <OptionsTable data={putsList} />
+        <OptionsTable data={putsList} exp={inputExp} />
       </div>
     </div>
   );

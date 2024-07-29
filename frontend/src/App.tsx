@@ -10,6 +10,7 @@ import RegisterPage from "./pages/PublicPages/RegisterPage.tsx";
 import LoginPage from "./pages/PublicPages/LoginPage.tsx";
 import NavBar from "./components/NavBar.tsx";
 import LoginButtons from "./pages/PublicPages/LoginButtons.tsx";
+import ProfitCalc from "./pages/UserPages/ProfitCalc.tsx";
 
 function App() {
   const client = new ApolloClient({
@@ -31,6 +32,7 @@ function App() {
             <Route path="/:id" element={<Old_Contract />} />
             <Route path="/bid-ask-test" element={<Database />} />
             <Route path="/loginbuttons" element={<LoginButtons />} />
+            <Route path="/profit-calc" element={<ProfitCalc />} />
           </Routes>
         </Router>
       </div>

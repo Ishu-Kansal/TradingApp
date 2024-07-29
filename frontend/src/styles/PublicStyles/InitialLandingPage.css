@@ -1,4 +1,4 @@
-.home {
+.landing_page {
   width: 100%;
   height: 90vh;
   display: flex;
@@ -55,9 +55,6 @@
   .home {
     justify-content: center;
     align-items: center;
-  }
-  .headerContainer h1,
-  .headerContainer p {
   }
 
   .headerContainer {

@@ -5,7 +5,13 @@ import WebsiteNavBar from "./PublicComponents/WebsiteNavBar";
 
 function NavBar() {
   const location = useLocation();
-  const userpaths = ["/home", "/options-tables", "/bid-ask-test", "/portfolio"];
+  const userpaths = [
+    "/home",
+    "/options-tables",
+    "/bid-ask-test",
+    "/portfolio",
+    "/profit-calc",
+  ];
   return (
     <div>
       {userpaths.includes(location.pathname) ? (

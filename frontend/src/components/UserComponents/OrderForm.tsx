@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Button,
   Form,
@@ -9,7 +9,7 @@ import {
   Select,
 } from "antd";
 
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import CreateOrderFulfill from "../../graphql/CreateOrderFulfill";
 
 function OrderForm() {
@@ -20,8 +20,7 @@ function OrderForm() {
     limit_price: 0.0,
   };
 
-  const [CreateOrder, { data, loading, error }] =
-    useMutation(CreateOrderFulfill);
+  const [CreateOrder, { data }] = useMutation(CreateOrderFulfill);
 
   const [visibleOrder, setvisibleOrder] = useState(false);
   const [currentForm, setCurrentForm] = useState(0);

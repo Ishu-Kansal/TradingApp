@@ -2,49 +2,55 @@ import TableCell from "@mui/material/TableCell/TableCell";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
-function OptionsTableRow({ row }) {
+function OptionsTableRow(props) {
   const navigate = useNavigate();
 
   const toContract = () => {
-    console.log(row);
-    navigate(`/${row.contractSymbol}`, {
-      state: { content: row },
+    console.log(props.row);
+    navigate(`/${props.row.contractSymbol}`, {
+      state: { content: props.row, exp: props.exp },
     });
   };
 
   return (
     <>
-      <TableCell component="th" scope="row">
+      <TableCell component="th" scope="props.row">
         <a
           href="javascript:void(0)"
           onClick={() => {
             toContract();
           }}
         >
-          <b>{row.contractSymbol}</b>
+          <b>{props.row.contractSymbol}</b>
         </a>
       </TableCell>
       <TableCell align="center">
-        {String(moment(row.lastTradeDate).format("MM/DD/YYYY\t h:mm A"))}
+        {String(moment(props.row.lastTradeDate).format("MM/DD/YYYY\t h:mm A"))}
       </TableCell>
       <TableCell align="center">
-        <b>{row.strike}</b>
+        <b>{props.row.strike}</b>
       </TableCell>
-      <TableCell align="center">{row.lastPrice}</TableCell>
-      <TableCell align="right">{row.bid === 0 ? "0.00" : row.bid}</TableCell>
-      <TableCell align="right">{row.ask === 0 ? "0.00" : row.ask}</TableCell>
-      <TableCell align="center">
-        {row.change === 0 ? "0.00" : Math.round(row.change * 100) / 100}
+      <TableCell align="center">{props.row.lastPrice}</TableCell>
+      <TableCell align="right">
+        {props.row.bid === 0 ? "0.00" : props.row.bid}
       </TableCell>
-      <TableCell align="center">
-        {Math.round(row.percentChange * 10) / 10}%
+      <TableCell align="right">
+        {props.row.ask === 0 ? "0.00" : props.row.ask}
       </TableCell>
       <TableCell align="center">
-        {row.volume === null ? "-" : row.volume}
+        {props.row.change === 0
+          ? "0.00"
+          : Math.round(props.row.change * 100) / 100}
       </TableCell>
-      <TableCell align="center">{row.openInterest}</TableCell>
       <TableCell align="center">
-        {Math.round(row.impliedVolatility * 10000) / 100}%
+        {Math.round(props.row.percentChange * 10) / 10}%
+      </TableCell>
+      <TableCell align="center">
+        {props.row.volume === null ? "-" : props.row.volume}
+      </TableCell>
+      <TableCell align="center">{props.row.openInterest}</TableCell>
+      <TableCell align="center">
+        {Math.round(props.row.impliedVolatility * 10000) / 100}%
       </TableCell>
     </>
   );
