@@ -35,15 +35,15 @@ function LoginForm() {
     },
     backgroundColor: "#109DFF",
     width: "300px",
-    "border-top-left-radius": "15px",
-    "border-top-right-radius": "15px",
-    "border-bottom-left-radius": "15px",
-    "border-bottom-right-radius": "15px",
+    borderTopLeftRadius: "15px",
+    borderTopRightRadius: "15px",
+    borderBottomLeftRadius: "15px",
+    borderBottomRightRadius: "15px",
     color: "#FFFFFF",
-    "font-weight": "bold",
-    "font-size": "17px",
-    "font-family": "Arial, Helvetica, sans-serif",
-    "letter-spacing": "1.5px",
+    fontWeight: "bold",
+    fontSize: "17px",
+    fontFamily: "Arial, Helvetica, sans-serif",
+    letterSpacing: "1.5px",
   };
 
   return (

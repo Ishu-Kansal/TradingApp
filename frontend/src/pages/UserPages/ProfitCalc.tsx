@@ -141,16 +141,16 @@ function ProfitCalc() {
       </span>
       <span>
         <TextField
-          label="Max Price"
+          label="Min Price"
           variant="outlined"
-          onChange={(e) => setMaxPrice(parseInt(e.target.value))}
+          onChange={(e) => setMinPrice(parseInt(e.target.value))}
         />
       </span>
       <span>
         <TextField
-          label="Min Price"
+          label="Max Price"
           variant="outlined"
-          onChange={(e) => setMinPrice(parseInt(e.target.value))}
+          onChange={(e) => setMaxPrice(parseInt(e.target.value))}
         />
       </span>
 
