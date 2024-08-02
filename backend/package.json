@@ -40,7 +40,8 @@
     "requirejs": "^2.3.6",
     "sequelize": "^6.37.3",
     "truffle": "^5.11.5",
-    "web3": "^4.9.0"
+    "web3": "^4.9.0",
+    "yahoo-finance2": "^2.11.3"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
