@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "loginBE.js"],
+  "include": ["src", "loginBE.js", "OrderCreationValidator.js"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
