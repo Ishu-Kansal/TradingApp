@@ -1,6 +1,6 @@
 import { PriorityQueue } from "@datastructures-js/priority-queue";
 
-export const StockMap = new Map();
+export let StockMap = new Map();
 
 var currentIndex = 1;
 
@@ -16,7 +16,7 @@ for (let i = 1; i <= 5; i++) {
     if (a.limit_price < b.limit_price) {
       return 1;
     }
-    return a.created_at < b.created_at;
+    return a.created_at > b.created_at ? 1 : -1;
   });
   const asksQueue = new PriorityQueue((a, b) => {
     if (a.limit_price < b.limit_price) {
@@ -25,7 +25,7 @@ for (let i = 1; i <= 5; i++) {
     if (a.limit_price > b.limit_price) {
       return 1;
     }
-    return a.created_at < b.created_at;
+    return a.created_at > b.created_at ? 1 : -1;
   });
   StockMap[i] = { bidsQueue, asksQueue };
 }
@@ -56,4 +56,11 @@ export function setCurrentIndex(index) {
 
 export function getCurrentIndex() {
   return currentIndex;
+}
+
+export function printQueueState(stock_id) {
+  return {
+    bidList: StockMap[stock_id].bidsQueue?.toArray(),
+    askList: StockMap[stock_id].asksQueue?.toArray(),
+  };
 }

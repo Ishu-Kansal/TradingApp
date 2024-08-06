@@ -1,18 +1,26 @@
 import db from "./pgAdaptor.js";
 
-for (let i = 1; i <= 5; i++) {
-  const bids = await getBidsForStock(i);
-  const asks = await getAsksForStock(i);
+await validateDB();
 
-  if (
-    bids.length > 0 &&
-    asks.length > 0 &&
-    bids[0].limit_price >= asks[0].limit_price
-  ) {
-    console.log(`SOMETHING WRONG WITH STOCK ${i}`);
-  } else {
-    console.log(`STOCK ${i} IS GUD`);
+export async function validateDB() {
+  var isValid = true;
+  for (let i = 1; i <= 5; i++) {
+    const bids = await getBidsForStock(i);
+    const asks = await getAsksForStock(i);
+
+    if (
+      bids.length > 0 &&
+      asks.length > 0 &&
+      bids[0].limit_price >= asks[0].limit_price
+    ) {
+      // console.log(`SOMETHING WRONG WITH STOCK ${i}`);
+      isValid = false;
+    } else {
+      // console.log(`STOCK ${i} IS GUD`);
+    }
   }
+
+  return isValid;
 }
 
 async function getBidsForStock(stock_id) {

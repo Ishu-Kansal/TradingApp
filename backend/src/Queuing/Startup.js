@@ -10,8 +10,12 @@ import {
 import db from "../../pgAdaptor.js";
 
 export async function Startup() {
-  const finalIndex = await getLastIndex();
-  setCurrentIndex(parseInt(finalIndex[0].max) + 1);
+  let finalIndex = await getLastIndex();
+  if (isNaN(parseInt(finalIndex[0].max) + 1)) {
+    setCurrentIndex(1);
+  } else {
+    setCurrentIndex(parseInt(finalIndex[0].max) + 1);
+  }
 
   console.log("curr idx: ", getCurrentIndex());
 

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { validateDB } from "../../OrderCreationValidator.js";
 
 const PARALLEL_URL = "http://localhost:9000/createq";
 
@@ -26,30 +27,37 @@ const delay = (delayInms) => {
 
 let haltLoop = 0;
 
-for (let i = 0; i < 200; i++) {
+for (let i = 0; i < 100; i++) {
   if (haltLoop != 0) {
     break;
   }
   //   let resolver = await delay(20);
-  axios({
+  const data = await axios({
     url: PARALLEL_URL,
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     data: {
-      user_id: genRandomInt(1, 4),
-      stock_id: genRandomInt(1, 5),
+      user_id: i,
+      stock_id: genRandomInt(1, 1),
       quantity: genRandomInt(1, 10),
       limit_price: getRandomDecimal(2, 4),
       type_ask: i % 2 == 0,
     },
-  })
-    .then((res) => {
-      console.log(res.data);
-    })
-    .catch((err) => {
-      console.log(err);
-      haltLoop = 1;
-    });
+  });
+  console.log(data.data);
+  // .then((res) => {
+  //   console.log(res.data);
+  // })
+  // .catch((err) => {
+  //   console.log(err);
+  //   haltLoop = 1;
+  // });
+
+  const isValid = await validateDB();
+  if (!isValid) {
+    console.log("invalid data:");
+    break;
+  }
 }

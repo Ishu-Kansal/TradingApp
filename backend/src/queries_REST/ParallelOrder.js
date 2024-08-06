@@ -26,7 +26,7 @@ export function createOrderFulfillQueue(req, res) {
   let quantitySatisfied = 0;
   var currIndex = 0;
   // console.log(0);
-  // console.log(data);
+  console.log("data: ", data);
   // console.log(1);
 
   const stock_id = req.body.stock_id;
@@ -34,16 +34,16 @@ export function createOrderFulfillQueue(req, res) {
   while (quantitySatisfied < req.body.quantity && currIndex < data.length) {
     // console.log("quant sat: ", quantitySatisfied);
     // console.log("curr idx: ", data[currIndex]);
-    //     //full satisfaction by index currIndex
+
+    /* CURRENT INDEX CAN SATISFY PLACED ORDER */
     if (
       data[currIndex].quantity - data[currIndex].quantity_sat >=
       req.body.quantity - quantitySatisfied
     ) {
-      //       //list order is partially filled or fully filled
-
       const bothFilled =
         data[currIndex].quantity - data[currIndex].quantity_sat ==
         req.body.quantity - quantitySatisfied;
+      console.log("current index fills order, both filled: ", bothFilled);
       const listUpdate = db
         .any(
           `UPDATE public."Orders" SET status = ${bothFilled ? 2 : 1},
@@ -71,9 +71,9 @@ export function createOrderFulfillQueue(req, res) {
         filledTransaction.status = 1;
 
         if (filledTransaction.type_ask) {
-          addBidStartup(stock_id, filledTransaction);
-        } else {
           addAskStartup(stock_id, filledTransaction);
+        } else {
+          addBidStartup(stock_id, filledTransaction);
         }
       }
 
@@ -92,6 +92,7 @@ export function createOrderFulfillQueue(req, res) {
       promisesToResolve.push(newTransaction);
 
       const indexToInsert = getCurrentIndex();
+      console.log("Inserting at id: ", indexToInsert, "\n\n\n\n");
       incrementCurrentIndex();
 
       if (req.body.type_ask) {
@@ -145,7 +146,7 @@ export function createOrderFulfillQueue(req, res) {
       break;
     }
 
-    //partial satisfaction by index currIndex
+    //requested quantity is greater than current index quantity
     else if (req.body.quantity - quantitySatisfied != 0) {
       const filledTransaction = req.body.type_ask
         ? StockMap[req.body.stock_id].bidsQueue.pop()
