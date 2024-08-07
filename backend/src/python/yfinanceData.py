@@ -10,6 +10,7 @@ from scipy.stats import norm
 from flask_caching import Cache
 import redis
 import time
+import xxhash
 
 
 app = Flask(__name__)
@@ -29,8 +30,7 @@ cache.init_app(app)
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
 
 
-@app.route('/<ticker>', methods=['GET'])
-def get_price(ticker):
+def get_price_cached(ticker):
     start_time = time.time()
     stock_price = redis_client.get(f"stock_price_{ticker}")
     if stock_price is None:
@@ -45,8 +45,71 @@ def get_price(ticker):
     
     retData = {'symbol': ticker, 'price': stock_price.decode("utf-8")}
     return json.dumps(retData)
+
+
+@app.route('/get_price', methods=['GET'])
+def get_price():
+    data = request.get_json()
+    ticker = data['ticker']
+    return get_price_cached(ticker)
     
+@app.route('/add_order_limit', methods=['POST'])
+def add_order():
+    starttime = time.time()
+    data = request.get_json()
+    ticker = data['ticker']
+    user_id = data['user_id']
+    quantity = data['quantity']
+    limit_price = data['limit_price']
+    created_at = time.time()
+    order_type = data['order_type']
     
+    order_obj = {
+            "ticker": ticker,
+            "user_id": user_id,
+            "quantity": quantity,
+            "limit_price": limit_price,
+            "created_at": created_at,
+            "order_type": order_type
+        }
+    
+    pipe = redis_client.pipeline()
+    
+    order_hash = xxhash.xxh64_hexdigest(json.dumps(order_obj))
+    # print('order hash: ', order_hash)
+    
+    pipe.hset(
+        order_hash, 
+        mapping={
+            "ticker": ticker,
+            "user_id": user_id,
+            "quantity": quantity,
+            "limit_price": limit_price,
+            "created_at": created_at,
+            "order_type": order_type
+        }
+    )
+    
+    order_obj2 = order_obj
+    order_obj2['hash'] = order_hash
+    
+    pipe.sadd(f"user_{user_id}_portfolio", order_hash)
+    
+    # print('created new transaction with hash: ', redisHash)
+    
+    limit_price_int = float(limit_price)
+    limit_price_int = round(limit_price_int, 2)
+    
+    pipe.zadd(f"{ticker}_{order_type}s", {order_hash: limit_price_int*100})
+    # print('added to set: ', redisSetAdd)
+    pipe.execute()
+    print(f"------RUNTIME: {time.time() - starttime}------\n\n")
+    
+    return json.dumps({
+        "transaction_hash": order_hash,
+        "created_at": created_at,
+    })
+      
 
 if __name__ == "__main__":
     app.run(port=5600, threaded=True)
