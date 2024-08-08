@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import redis.asyncio
 import yfinance as yf
 import json
 import logging
@@ -11,6 +12,8 @@ from flask_caching import Cache
 import redis
 import time
 import xxhash
+
+from helpers import executeOrders
 
 
 app = Flask(__name__)
@@ -27,7 +30,7 @@ cache = Cache(app)
 cache.init_app(app)
 
 # Initialize Redis client
-redis_client = redis.Redis(host='localhost', port=6379, db=0)
+redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
 
 
 def get_price_cached(ticker):
@@ -46,6 +49,33 @@ def get_price_cached(ticker):
     retData = {'symbol': ticker, 'price': stock_price.decode("utf-8")}
     return json.dumps(retData)
 
+def execute_orders(ticker: str):
+    # replace in prod
+    # curr_price = get_price_cached(ticker)
+    curr_price = 100
+    bidsToExecute = redis_client.zrangebyscore(f"{ticker.upper()}_bids", curr_price, "inf")
+    asksToExecute = redis_client.zrangebyscore(f"{ticker.upper()}_asks", "-inf", curr_price)
+    
+    print('bids: ', bidsToExecute, '\n', type(bidsToExecute), '\n\n\n')
+    print('asks: ', asksToExecute,type(asksToExecute), '\n\n\n')
+    
+    retJSON = {
+        "bids": str(bidsToExecute),
+        "asks": str(asksToExecute),
+    }
+    
+    executionBidsJSON = []
+    executionAsksJSON = []
+    
+    for bid in bidsToExecute:
+        executionBidsJSON.append(redis_client.hgetall(bid))
+        
+    for ask in asksToExecute:
+        executionAsksJSON.append(redis_client.hgetall(ask))
+    
+    executeOrders({"bids": executionBidsJSON, "asks": executionAsksJSON, "curr_price": curr_price})
+    
+    return json.dumps(retJSON)
 
 @app.route('/get_price', methods=['GET'])
 def get_price():
@@ -93,14 +123,14 @@ def add_order():
     order_obj2 = order_obj
     order_obj2['hash'] = order_hash
     
-    pipe.sadd(f"user_{user_id}_portfolio", order_hash)
+    pipe.sadd(f"user_{user_id}_open_orders", order_hash)
     
     # print('created new transaction with hash: ', redisHash)
     
     limit_price_int = float(limit_price)
     limit_price_int = round(limit_price_int, 2)
     
-    pipe.zadd(f"{ticker}_{order_type}s", {order_hash: limit_price_int*100})
+    pipe.zadd(f"{ticker}_{order_type}s", {order_hash: limit_price_int})
     # print('added to set: ', redisSetAdd)
     pipe.execute()
     print(f"------RUNTIME: {time.time() - starttime}------\n\n")
@@ -110,6 +140,11 @@ def add_order():
         "created_at": created_at,
     })
       
-
+@app.route('/execute', methods=['POST'])
+def execute():
+    data = request.get_json()
+    ticker = data['ticker']
+    return execute_orders(ticker)
+    
 if __name__ == "__main__":
     app.run(port=5600, threaded=True)
