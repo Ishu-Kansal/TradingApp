@@ -52,7 +52,7 @@ def get_price_cached(ticker):
 def execute_orders(ticker: str):
     # replace in prod
     # curr_price = get_price_cached(ticker)
-    curr_price = 100
+    curr_price = 110
     bidsToExecute = redis_client.zrangebyscore(f"{ticker.upper()}_bids", curr_price, "inf")
     asksToExecute = redis_client.zrangebyscore(f"{ticker.upper()}_asks", "-inf", curr_price)
     
@@ -68,13 +68,26 @@ def execute_orders(ticker: str):
     executionAsksJSON = []
     
     for bid in bidsToExecute:
-        executionBidsJSON.append(redis_client.hgetall(bid))
+        bidDict = redis_client.hgetall(bid)
+        bidDict['hash'] = bid
+        executionBidsJSON.append(bidDict)
         
     for ask in asksToExecute:
-        executionAsksJSON.append(redis_client.hgetall(ask))
+        askDict = redis_client.hgetall(ask)
+        askDict['hash'] = ask
+        executionAsksJSON.append(askDict)
     
-    executeOrders({"bids": executionBidsJSON, "asks": executionAsksJSON, "curr_price": curr_price})
-    
+    delOrders = executeOrders({"bids": executionBidsJSON, "asks": executionAsksJSON, "curr_price": curr_price})
+    for order in delOrders:
+        if(order['status'] == 'BOUGHT'):
+            redis_client.zrem(f"{ticker.upper()}_bids", order['hash'])
+            redis_client.srem(f"user_{order['user_id']}_open_orders", order['hash'])
+            redis_client.delete(order['hash'])
+        if(order['status'] == 'SOLD'):
+            redis_client.zrem(f"{ticker.upper()}_asks", order['hash'])
+            redis_client.srem(f"user_{order['user_id']}_open_orders", order['hash'])
+            redis_client.delete(order['hash'])
+             
     return json.dumps(retJSON)
 
 @app.route('/get_price', methods=['GET'])
@@ -93,6 +106,14 @@ def add_order():
     limit_price = data['limit_price']
     created_at = time.time()
     order_type = data['order_type']
+    
+    '''
+    FIX bug where numbers added are not rounded
+    '''
+    
+    limit_price = float(limit_price)
+    limit_price = round(limit_price,2)
+    limit_price = str(limit_price)
     
     order_obj = {
             "ticker": ticker,

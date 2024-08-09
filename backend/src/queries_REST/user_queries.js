@@ -1,11 +1,11 @@
-import db from "../../pgAdaptor.js";
 import bcrypt, { genSalt } from "bcrypt";
 import { createTokens, validateTokens } from "../JWT.js";
+import dbPT from "../../paperTradingAdaptor.js";
 
 export async function getUsers(req, res) {
   try {
-    const users = await db.any(
-      `SELECT * FROM public."Users" ORDER BY user_id ASC`
+    const users = await dbPT.any(
+      `SELECT * FROM "PaperTrading"."Users" ORDER BY user_id ASC`
     );
 
     res.status(200).json({
@@ -20,8 +20,8 @@ export async function getUsers(req, res) {
 
 export async function getUser(req, res) {
   try {
-    const users = await db.any(
-      `SELECT * FROM public."Users" WHERE user_id = ${req.params.id} ORDER BY user_id ASC`
+    const users = await dbPT.any(
+      `SELECT * FROM "PaperTrading"."Users" WHERE user_id = ${req.params.id} ORDER BY user_id ASC`
     );
 
     res.status(200).json({
@@ -38,8 +38,8 @@ export async function createUser(req, res) {
   const password = await bcrypt.hash(req.body.password, 10);
 
   try {
-    const existingUsers = await db.any(
-      `SELECT * FROM public."Users" WHERE username='${req.body.username}'`
+    const existingUsers = await dbPT.any(
+      `SELECT * FROM "PaperTrading"."Users" WHERE username='${req.body.username}'`
     );
     if (existingUsers.length != 0) {
       res.status(400).json({
@@ -48,8 +48,8 @@ export async function createUser(req, res) {
         message: `user already existing with name ${req.body.username}`,
       });
     } else {
-      const createdUser = await db.any(
-        `INSERT INTO public."Users" (username, password_hash) VALUES ('${req.body.username}', '${password}') RETURNING user_id`
+      const createdUser = await dbPT.any(
+        `INSERT INTO "PaperTrading"."Users" (username, password_hash) VALUES ('${req.body.username}', '${password}') RETURNING user_id`
       );
       res.status(200).json({
         status: "success",
@@ -64,8 +64,8 @@ export async function createUser(req, res) {
 
 export async function validateUser(req, res) {
   try {
-    const userDetails = await db.any(
-      `SELECT * FROM public."Users" WHERE username='${req.body.username}'`
+    const userDetails = await dbPT.any(
+      `SELECT * FROM "PaperTrading"."Users" WHERE username='${req.body.username}'`
     );
 
     if (userDetails.length != 1) {
