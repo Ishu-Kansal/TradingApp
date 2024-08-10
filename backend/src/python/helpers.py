@@ -205,6 +205,9 @@ def executeOrders(data):
         if len(rows) == 0:
             statusVar['status'] = 'ERROR: EXISTING POSITION NOT FOUND'
         else: 
+            '''
+            FIX: average price not computing correctly
+            '''
             oldAveragePrice = float(rows[0][4])
             oldQuantity = float(rows[0][3])
             oldTotalPrice = oldAveragePrice * oldQuantity

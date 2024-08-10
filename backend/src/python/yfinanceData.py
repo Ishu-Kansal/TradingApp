@@ -49,6 +49,7 @@ def get_price_cached(ticker):
     retData = {'symbol': ticker, 'price': stock_price.decode("utf-8")}
     return json.dumps(retData)
 
+#TODO --figure out how to either remove or update collateral
 def execute_orders(ticker: str):
     # replace in prod
     # curr_price = get_price_cached(ticker)
@@ -96,6 +97,7 @@ def get_price():
     ticker = data['ticker']
     return get_price_cached(ticker)
     
+#TODO --remove stock or cash quantity for collateral  
 @app.route('/add_order_limit', methods=['POST'])
 def add_order():
     starttime = time.time()
@@ -137,12 +139,10 @@ def add_order():
             "quantity": quantity,
             "limit_price": limit_price,
             "created_at": created_at,
-            "order_type": order_type
+            "order_type": order_type,
+            "hash": order_hash,
         }
     )
-    
-    order_obj2 = order_obj
-    order_obj2['hash'] = order_hash
     
     pipe.sadd(f"user_{user_id}_open_orders", order_hash)
     
@@ -161,6 +161,41 @@ def add_order():
         "created_at": created_at,
     })
       
+@app.route('/get_user_orders_active', methods=['GET'])
+def get_user_orders_active():
+    data = request.get_json()
+    user_id = data['user_id']
+    active_order_hashes = redis_client.smembers(f'user_{user_id}_open_orders')
+    
+    pipe = redis_client.pipeline()
+    
+    for order in active_order_hashes:
+        pipe.hgetall(order)
+      
+    results = pipe.execute()
+    print('results: ', results)
+    return results
+
+#TODO --release collateral upon cancellation
+@app.route('/remove_order', methods=['DELETE'])
+def remove_order():
+    data = request.get_json()
+    hash = data['hash']
+    user = str(data['user_id'])
+    
+    orderToRemove = redis_client.hgetall(hash)
+    
+    if(orderToRemove['user_id'] != user):
+        return 'USER unauthorized to delete', 401
+    
+    ticker : str = orderToRemove['ticker']
+    
+    redis_client.zrem(f"{ticker.upper()}_asks", hash)
+    redis_client.srem(f"user_{orderToRemove['user_id']}_open_orders", hash)
+    redis_client.delete(hash)
+    
+    return f'DELETED ORDER with hash {hash}', 200
+    
 @app.route('/execute', methods=['POST'])
 def execute():
     data = request.get_json()
