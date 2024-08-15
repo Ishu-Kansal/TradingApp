@@ -170,7 +170,8 @@ def getHV(ticker, duration, windowSize):
     retDF = {}    
     retDF['hv'] = hv
     retDF['history'] = hist
-
+    retDF['stock_history'] = histclose.iloc[-(len(hist)):]
+    
     return retDF
 
 def getPastEarningsDates(ticker):
@@ -253,6 +254,7 @@ def getData(ticker, duration, windowSize):
     earnings = getPastEarningsDates(ticker)
     datesFull = df['history']
     vals = df['hv']
+    history = df['stock_history']
     
     earningsInTime = []
     
@@ -263,7 +265,8 @@ def getData(ticker, duration, windowSize):
     retObj = {
         "dates": datesFull,
         "values": vals.to_list(),
-        "earnings_dates": earningsInTime
+        "earnings_dates": earningsInTime,
+        "stock_history": history.to_list()
     }
     
     return retObj

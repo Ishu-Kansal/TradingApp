@@ -10,6 +10,7 @@ function HVCharts() {
     dates: [""],
     values: [],
     earnings_dates: [""],
+    stock_history: [],
   });
   const [show, setShow] = useState(false);
 
