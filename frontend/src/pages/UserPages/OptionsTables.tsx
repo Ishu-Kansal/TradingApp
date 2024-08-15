@@ -3,7 +3,7 @@ import Button from "@mui/material/Button/Button";
 import TextField from "@mui/material/TextField/TextField";
 import { useState } from "react";
 import OptionsTable from "../../components/UserComponents/OptionsTable";
-import "../../styles/UserStyles/OptionsTables.css";
+import "../../styles/UserStyles/pages/OptionsTables.css";
 
 function OptionsTables() {
   const handleSearchStock = async () => {

@@ -1,6 +1,7 @@
 import TableCell from "@mui/material/TableCell/TableCell";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import "../../styles/UserStyles/components/OptionsTableRow.css";
 
 function OptionsTableRow(props) {
   const navigate = useNavigate();

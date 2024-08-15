@@ -11,6 +11,7 @@ function NavBar() {
     "/bid-ask-test",
     "/portfolio",
     "/profit-calc",
+    "/hist-iv-charts",
   ];
   return (
     <div>

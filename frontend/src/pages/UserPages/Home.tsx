@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import "../../styles/UserStyles/Home.css";
+import "../../styles/UserStyles/pages/Home.css";
 
 function Home() {
   return (

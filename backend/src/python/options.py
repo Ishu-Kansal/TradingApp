@@ -5,11 +5,12 @@ import json
 import logging
 import datetime
 from datetime import datetime
-from flask import Flask, request
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from scipy.stats import norm
 
-import helpers
+import pandas_market_calendars as mcal
+import optionsHelpers
 
 
 app = Flask(__name__)
@@ -86,10 +87,14 @@ def options_profit_calculator():
     
     current_price = tk.fast_info.last_price
     nowTime = datetime.today()
+    
     exp_datetime = datetime.strptime(exp_date, '%Y-%m-%d')
     
-    DTE = (exp_datetime-nowTime).days + 1
-    # print('\n\n\n\n\n\n\n\n\n', DTE)
+    nyse = mcal.get_calendar('NYSE')
+    nowTime = nowTime.strftime('%Y-%m-%d')
+    early = nyse.schedule(start_date=nowTime, end_date=exp_datetime)
+    DTE = len(mcal.date_range(early, frequency='1D'))
+    
     
     strike = data['strike']
     r = data['free_rate']
@@ -113,9 +118,32 @@ def options_profit_calculator():
         curr_option_value = last_option_price
     # print('iv: ', iv, '\n\n\n\n\n\n\n\n\n')
     
-    outData = helpers.BlackScholesSeries(current_price, DTE, strike, r, iv*100, option_type, max_price, min_price, curr_option_value)
+    outData = optionsHelpers.BlackScholesSeries(current_price, DTE, strike, r, iv*100, option_type, max_price, min_price, curr_option_value)
     # print(outData)
     return(outData)
+
+# @app.route('/historical-volatility-graphs', methods=['POST'])
+# def historical_volatility_graphs():
+#     data = request.get_json()
+    
+#     ticker = data['ticker']
+#     duration = data['duration']
+#     window = data['window']
+    
+#     res = optionsHelpers.getIMG2(ticker, duration, window)
+#     file = open('temp.svg', 'w').write(res['svg'])
+#     return jsonify(res)
+
+@app.route('/historical-volatility-graphs', methods=['POST'])
+def historical_volatility_graphs2():
+    data = request.get_json()
+    
+    ticker = data['ticker']
+    duration = data['duration']
+    window = data['window']
+    
+    res = optionsHelpers.getData(ticker, duration, window)
+    return json.dumps(res)
 
 if __name__ == "__main__":
     app.run(port=5500, threaded=True, debug=True)

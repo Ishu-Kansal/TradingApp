@@ -1,4 +1,4 @@
-.navbar {
+.userNavbar {
   width: 100%;
   height: 100px;
   background-color: #020303;
@@ -6,110 +6,76 @@
   flex-direction: row;
 }
 
-.navbar .leftSide {
+.userNavbar .leftSide {
   flex: 50%;
   height: 100%;
   display: flex;
   align-items: center;
-  padding-left: 150px;
+  padding-left: 50px;
+  max-width: 20%;
 }
 
-.navbar .rightSide {
-  flex: 50%;
-  height: 100%;
-  display: flex;
-  align-items: right;
-  justify-content: right;
-}
-
-.navbar a {
-  color: rgb(3, 172, 0);
+.userNavbar a {
+  color: rgb(255, 255, 255);
   text-decoration: none;
   margin: 20px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Ubuntu;
+  font-size: large;
+
+  font-feature-settings: "tnum" on, "lnum" on;
+  font-style: normal;
+  --ui-lib-typography-font-size: 16px;
+  font-size: large;
+  font-weight: 300;
+  --ui-lib-typography-line-height: 24px;
+  display: flex;
+  line-height: var(--ui-lib-typography-line-height);
 }
 
-.navbar .companyName {
+.userNavbar .companyName {
   color: rgb(60, 207, 153);
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-weight: lighter;
+  font-size: 30px;
+  padding: 0;
+  min-height: 0;
+  min-width: 0;
 }
 
-.navbar .rightSide .navbarButton {
-  background-color: transparent;
-  border: none;
-  color: rgb(255, 255, 255);
-  cursor: pointer;
+.userNavbar .rightSide {
+  flex: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.navbar .rightSide svg {
-  font-size: 40px;
-}
-
-.navbar #open {
+.userNavbar #open {
   padding-left: 0px;
 }
-.navbar #open img {
+.userNavbar #open img {
   display: none;
 }
 
-.navbar #close img {
+.userNavbar #close img {
   display: inherit;
 }
 
-.navbar #open .hiddenLinks {
+.userNavbar #open .hiddenLinks {
   display: inherit;
   margin-left: 30px;
 }
 
-.navbar #close .hiddenLinks {
+.userNavbar #close .hiddenLinks {
   display: none;
 }
 
-.navbar #open a {
+.userNavbar #open a {
   width: 70px;
   margin: 5px;
 }
 @media only screen and (max-width: 900px) {
-  .navbar .rightSide a {
-    width: 70px;
-  }
-  .navbar .leftSide {
+  .userNavbar .leftSide {
     padding-left: 50px;
-  }
-}
-
-@media only screen and (max-width: 600px) {
-  .navbar .rightSide a {
-    display: none;
-  }
-
-  .navbar .rightSide {
-    justify-content: flex-end;
-    padding-right: 50px;
-  }
-
-  .navbar .rightSide .navbarButton {
-    display: inherit;
-  }
-}
-
-@media only screen and (min-width: 600px) {
-  .navbar .rightSide .navbarButton {
-    display: none;
-  }
-
-  .hiddenLinks {
-    display: none;
-  }
-}
-
-@media only screen and (min-width: 600px) {
-  .navbar .rightSide .navbarButton {
-    display: none;
-  }
-
-  .hiddenLinks {
-    display: none;
   }
 }
