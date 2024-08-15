@@ -1,7 +1,14 @@
 import axios from "axios";
 import { useState } from "react";
 import HVChart from "../../components/UserComponents/HVChart";
-import { Button, MenuItem, Select, TextField } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 
 import "../../styles/UserStyles/pages/HVChartstyles.css";
 
@@ -64,15 +71,18 @@ function HVCharts() {
           />
         </span>
         <span>
-          <Select
-            className="HVInput"
-            label="Duration"
-            onChange={(e: any) => setDuration(e.target.value)}
-            sx={{ minWidth: 200 }}
-            defaultValue={""}
-          >
-            {dateOptions}
-          </Select>
+          <FormControl>
+            <InputLabel>Duration</InputLabel>
+            <Select
+              className="HVInput"
+              label="Duration"
+              onChange={(e: any) => setDuration(e.target.value)}
+              sx={{ minWidth: 200 }}
+              defaultValue={""}
+            >
+              {dateOptions}
+            </Select>
+          </FormControl>
         </span>
         <span>
           <Button variant="contained" onClick={getData}>
