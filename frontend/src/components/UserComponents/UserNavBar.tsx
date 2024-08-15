@@ -36,6 +36,7 @@ function UserNavBar() {
           <Link to="/bid-ask-test">Bid-Ask Database</Link>
           <Link to="/portfolio">Portfolio</Link>
           <Link to="/profit-calc">Options Profit Calculator</Link>
+          <Link to="/hist-iv-charts">Historical IV Charts</Link>
         </div>
       </div>
       <div className="rightSide">

@@ -25,7 +25,7 @@ function HVCharts() {
   const [duration, setDuration] = useState("");
   const [window, setWindow] = useState(0);
 
-  const dateList = ["1mo", "3mo", "6mo", "1y"];
+  const dateList = ["1mo", "3mo", "6mo", "1y", "2y"];
 
   const dateOptions = dateList.map((duration) => (
     <MenuItem value={duration} key={duration}>
