@@ -4,7 +4,7 @@ import yfinance as yf
 import json
 import logging
 import datetime
-from datetime import datetime
+from datetime import date, datetime
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from scipy.stats import norm
@@ -144,6 +144,30 @@ def historical_volatility_graphs2():
     
     res = optionsHelpers.getData(ticker, duration, window)
     return json.dumps(res)
+
+@app.route('/mcsimulator', methods=['POST'])
+def mcsimulator():
+    data = request.get_json()
+    ticker = data['ticker']
+    useHistorical = data['useHistorical']
+    durationHistorical = data['historicalDuration']
+    endtime = data['endtime']
+    pctOTM = data['optionsPctOTM']
+    numSims = data['numSims']
+    riskFreeRate = data['iRate']
+    
+    useHistorical = (False if useHistorical == 'false' else True)
+    
+    stockReturn = optionsHelpers.runMonteCarlo(ticker, useHistorical, durationHistorical, endtime, pctOTM, numSims, riskFreeRate)
+    
+    res = {
+        "return": stockReturn
+    }
+    
+    return jsonify(res)
+    
+    
+    
 
 if __name__ == "__main__":
     app.run(port=5500, threaded=True, debug=True)

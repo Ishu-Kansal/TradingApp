@@ -5,16 +5,14 @@ import numpy as np
 import yfinance as yf
 import json
 import datetime
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from scipy.stats import norm
 
 import matplotlib.pyplot as plt
-import json
-import yfinance as yf
-import datetime
-from datetime import datetime
 import matplotlib.dates as mdates
 import io
+
+import pandas_market_calendars as mcal
 
 
 matplotlib.use('Agg')
@@ -271,3 +269,105 @@ def getData(ticker, duration, windowSize):
     
     return retObj
 
+# Monte Carlo Simulation for stock prices
+def calcMeanOptionsSkew(stock, endtime, pctOTM):
+    stockprice = stock.fast_info.last_price
+    calls = pd.DataFrame()
+    puts = pd.DataFrame()
+
+    targetDate = datetime.strptime(endtime, '%Y-%m-%d')
+    expList = stock.options
+    expList = [datetime.strptime(exp, '%Y-%m-%d') for exp in expList]   
+    expDateChose = min(expList, key=lambda x: abs(x-targetDate))
+    expDateChose = datetime.strftime(expDateChose, '%Y-%m-%d')
+    
+    calls = stock.option_chain(expDateChose).calls
+    puts = stock.option_chain(expDateChose).puts
+    
+    targetCallPrice = stockprice * (1+pctOTM)
+    targetPutPrice = stockprice * (1-pctOTM)
+
+
+    # Calculate adjusted call premium for calls x% OTM
+    below_call_target = calls[calls['strike'] <= targetCallPrice]
+    above_call_target = calls[calls['strike'] >= targetCallPrice]
+    closest_below = below_call_target.loc[below_call_target['strike'].idxmax()]
+    closest_above = above_call_target.loc[above_call_target['strike'].idxmin()]
+    closest_strikes = [closest_below, closest_above]
+    
+    closestlowerCall = closest_strikes[0]['strike']
+    closestupperCall = closest_strikes[1]['strike']
+    
+    strikeDiff = closestupperCall - closestlowerCall
+    normalizedlowerCallWeight = 1 - (targetCallPrice - closestlowerCall) / strikeDiff
+    normalizedupperCallWeight = 1 - normalizedlowerCallWeight
+    
+    adjCallPremium = normalizedlowerCallWeight*(closest_strikes[0]['bid'] + closest_strikes[0]['ask'])/2 + normalizedupperCallWeight*(closest_strikes[1]['bid'] + closest_strikes[1]['ask'])/2
+    # Calculate adjusted put premium for puts x% OTM
+    below_put_target = puts[puts['strike'] <= targetPutPrice]
+    above_put_target = puts[puts['strike'] >= targetPutPrice]
+    closest_below = below_put_target.loc[below_put_target['strike'].idxmax()]
+    closest_above = above_put_target.loc[above_put_target['strike'].idxmin()]
+    closest_strikes = [closest_below, closest_above]
+    
+    closestlowerPut = closest_strikes[0]['strike']
+    closestupperPut = closest_strikes[1]['strike']
+    
+    
+    strikeDiff = closestupperPut - closestlowerPut
+    normalizedlowerPutWeight = (targetPutPrice - closestlowerPut) / strikeDiff
+    normalizedupperPutWeight = 1 - normalizedlowerPutWeight
+    
+    adjPutPremium = normalizedlowerPutWeight*(closest_strikes[0]['bid'] + closest_strikes[0]['ask'])/2 + normalizedupperPutWeight*(closest_strikes[1]['bid'] + closest_strikes[1]['ask'])/2
+    
+    # print('adjusted call premium: ', adjCallPremium)
+    # print('adjusted put premium: ', adjPutPremium)
+    
+    skew = (adjCallPremium - adjPutPremium) / ( (adjCallPremium + adjPutPremium) /2 )
+    
+    return skew
+
+def runMonteCarlo(ticker, useHistorical, durationHistorical, endtime, pctOTM, numSims, riskFreeRate):
+    
+    nyse = mcal.get_calendar('NYSE')
+    early = nyse.schedule(start_date=(date.today()).strftime('%Y-%m-%d'), end_date=endtime)
+    dates = mcal.date_range(early, frequency='1D')
+    
+    numDays = len(dates)
+    
+    starttime = time.time()
+    stock = yf.Ticker(ticker)
+    histclose = (stock.history(period=durationHistorical))['Close']
+    
+    log_returns = np.log(histclose/histclose.shift(1)).dropna()
+    volatility = log_returns.rolling(window=5).std()
+    volatility = volatility.iloc[-1]
+    
+    mu = np.sum(log_returns) / len(log_returns)
+    # print('mu: ', mu, '\n')
+   
+    # print('\n\nvolatility: ', volatility)
+    
+    initalPrice = histclose.iloc[-1]
+    # print('\n\nS0: ', initalPrice)
+    dt = 1
+    num_t = numDays
+    i_rate = riskFreeRate / 252
+    
+    predictions = np.zeros(shape=(num_t+1, numSims))
+    predictions[0] = initalPrice
+    
+    # print('simulated vol', np.random.standard_normal(NUM_SIMS))
+    
+    skew = calcMeanOptionsSkew(stock, endtime, pctOTM)
+    print(f'skew = {skew}')
+    
+    for t in range(1, num_t+1):
+        predictions[t] = predictions[t-1] * np.exp(( (mu if useHistorical else i_rate) - 0.5*volatility**2)*dt 
+                        + volatility*np.sqrt(dt)*np.random.normal(skew/np.sqrt(num_t), 1, numSims))
+    
+    dp = np.mean((predictions[-1] - initalPrice)) / initalPrice
+    print('predicted price change: ', dp*100, '%')    
+    print(f'--------{time.time()-starttime} seconds--------')
+    
+    return dp
