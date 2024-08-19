@@ -74,11 +74,7 @@ function WebsiteNavBar() {
         <Button className="navbarButton">Hello</Button>
       </div>
       <div className="rightSide">
-        <Button
-          className="startButton"
-          sx={startButtonStyle}
-          href="/loginbuttons"
-        >
+        <Button className="startButton" sx={startButtonStyle} href="/register">
           Get Started
         </Button>
       </div>

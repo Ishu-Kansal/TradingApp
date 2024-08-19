@@ -9,7 +9,6 @@ import InitialLandingPage from "./pages/PublicPages/InitialLandingPage.tsx";
 import RegisterPage from "./pages/PublicPages/RegisterPage.tsx";
 import LoginPage from "./pages/PublicPages/LoginPage.tsx";
 import NavBar from "./components/NavBar.tsx";
-import LoginButtons from "./pages/PublicPages/LoginButtons.tsx";
 import ProfitCalc from "./pages/UserPages/ProfitCalc.tsx";
 import PricingPage from "./pages/PublicPages/PricingPage.tsx";
 import HVCharts from "./pages/UserPages/HVCharts.tsx";
@@ -33,7 +32,6 @@ function App() {
             <Route path="/options-tables" element={<OptionsTables />} />
             <Route path="/:id" element={<Old_Contract />} />
             <Route path="/bid-ask-test" element={<Database />} />
-            <Route path="/loginbuttons" element={<LoginButtons />} />
             <Route path="/profit-calc" element={<ProfitCalc />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/hist-iv-charts" element={<HVCharts />} />
