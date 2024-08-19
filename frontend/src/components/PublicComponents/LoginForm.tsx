@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { Button, TextField } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../../styles/PublicStyles/LoginForm.css";
 
 function LoginForm() {
@@ -76,6 +76,7 @@ function LoginForm() {
       >
         submit
       </Button>
+      <Link to="/register">Register Here!</Link>
     </div>
   );
 }

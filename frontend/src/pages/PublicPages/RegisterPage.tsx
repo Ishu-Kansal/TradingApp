@@ -1,9 +1,10 @@
-import RegistrationForm from "../../components/PublicComponents/RegistrationForm";
+import "../../styles/PublicStyles/RegisterPage.css";
+import RegistrationForm2 from "../../components/PublicComponents/RegistrationForm2";
 
 function RegisterPage() {
   return (
-    <div>
-      <RegistrationForm />
+    <div className="RegisterPage">
+      <RegistrationForm2 />
     </div>
   );
 }

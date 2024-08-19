@@ -1,0 +1,7 @@
+.RegisterPage {
+  position: absolute;
+  top: 50%;
+  left: 49%;
+  padding: 50px;
+  transform: translate(-50%, -40%);
+}
