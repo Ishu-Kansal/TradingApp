@@ -302,7 +302,19 @@ def calcMeanOptionsSkew(stock, endtime, pctOTM):
     normalizedlowerCallWeight = 1 - (targetCallPrice - closestlowerCall) / strikeDiff
     normalizedupperCallWeight = 1 - normalizedlowerCallWeight
     
-    adjCallPremium = normalizedlowerCallWeight*(closest_strikes[0]['bid'] + closest_strikes[0]['ask'])/2 + normalizedupperCallWeight*(closest_strikes[1]['bid'] + closest_strikes[1]['ask'])/2
+    closest_strikes_lower: float
+    closest_strikes_upper: float
+    if(closest_strikes[0]['bid'] == 0 or closest_strikes[0]['ask'] == 0):
+        closest_strikes_lower = closest_strikes[0]['lastPrice']
+    else:
+        closest_strikes_lower = (closest_strikes[0]['bid'] + closest_strikes[0]['ask'])/2
+        
+    if(closest_strikes[1]['bid'] == 0 or closest_strikes[1]['ask'] == 0):
+        closest_strikes_upper = closest_strikes[1]['lastPrice']
+    else:
+        closest_strikes_upper = (closest_strikes[1]['bid'] + closest_strikes[1]['ask'])/2
+    
+    adjCallPremium = normalizedlowerCallWeight*closest_strikes_lower + normalizedupperCallWeight*closest_strikes_upper
     # Calculate adjusted put premium for puts x% OTM
     below_put_target = puts[puts['strike'] <= targetPutPrice]
     above_put_target = puts[puts['strike'] >= targetPutPrice]
@@ -318,7 +330,17 @@ def calcMeanOptionsSkew(stock, endtime, pctOTM):
     normalizedlowerPutWeight = (targetPutPrice - closestlowerPut) / strikeDiff
     normalizedupperPutWeight = 1 - normalizedlowerPutWeight
     
-    adjPutPremium = normalizedlowerPutWeight*(closest_strikes[0]['bid'] + closest_strikes[0]['ask'])/2 + normalizedupperPutWeight*(closest_strikes[1]['bid'] + closest_strikes[1]['ask'])/2
+    if(closest_strikes[0]['bid'] == 0 or closest_strikes[0]['ask'] == 0):
+        closest_strikes_lower = closest_strikes[0]['lastPrice']
+    else:
+        closest_strikes_lower = (closest_strikes[0]['bid'] + closest_strikes[0]['ask'])/2
+        
+    if(closest_strikes[1]['bid'] == 0 or closest_strikes[1]['ask'] == 0):
+        closest_strikes_upper = closest_strikes[1]['lastPrice']
+    else:
+        closest_strikes_upper = (closest_strikes[1]['bid'] + closest_strikes[1]['ask'])/2
+    
+    adjPutPremium = normalizedlowerPutWeight*closest_strikes_lower+ normalizedupperPutWeight*closest_strikes_upper
     
     # print('adjusted call premium: ', adjCallPremium)
     # print('adjusted put premium: ', adjPutPremium)
