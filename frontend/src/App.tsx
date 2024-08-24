@@ -12,6 +12,7 @@ import NavBar from "./components/NavBar.tsx";
 import ProfitCalc from "./pages/UserPages/ProfitCalc.tsx";
 import PricingPage from "./pages/PublicPages/PricingPage.tsx";
 import HVCharts from "./pages/UserPages/HVCharts.tsx";
+import FeaturePage from "./pages/PublicPages/FeaturePage.tsx";
 
 function App() {
   const client = new ApolloClient({
@@ -35,6 +36,7 @@ function App() {
             <Route path="/profit-calc" element={<ProfitCalc />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/hist-iv-charts" element={<HVCharts />} />
+            <Route path="/features" element={<FeaturePage />} />
           </Routes>
         </Router>
       </div>

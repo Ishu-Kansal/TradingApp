@@ -1,0 +1,56 @@
+.feature-left {
+  display: flexbox;
+
+  width: 1500px;
+  min-height: 300px;
+  max-height: 300px;
+  text-overflow: clip;
+
+  background-color: #ffffff; /* Background color for the feature box */
+  border-radius: 30px; /* Rounded corners */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4); /* Shadow for depth */
+  padding: 20px;
+  margin: 20px 0; /* Space between each feature */
+  text-align: left; /* Center the text inside the feature */
+}
+
+.feature-content-left {
+  text-overflow: clip;
+}
+
+.feature-image-left {
+  position: absolute;
+  padding-top: calc(
+    100% * (height / width)
+  ); /* Adjust 'height' and 'width' with your image dimensions */
+  background-size: cover; /* Make the image cover the entire section */
+  background-position: center; /* Center the background image */
+  background-repeat: no-repeat; /* Prevent the background image from repeating */
+
+  transform: translate(5%, -2%);
+
+  min-height: 35%;
+  min-width: 25%;
+  max-height: 75%;
+  max-width: 30%;
+  border-radius: 15px;
+}
+
+.feature-text-left {
+  font-size: 30px;
+  font-weight: 500;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  color: rgb(0, 0, 0);
+
+  max-width: 60%;
+  position: absolute;
+  padding-right: 50px;
+  padding-top: 50px;
+  left: 35%; /* 25% from the left edge of the section */
+}
+
+/* Optional: Add smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}

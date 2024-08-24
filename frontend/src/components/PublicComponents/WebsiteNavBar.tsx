@@ -66,7 +66,7 @@ function WebsiteNavBar() {
         </div>
       </div>
       <div className="centerSide">
-        <Link to="/products">Products</Link>
+        <Link to="/features">Features</Link>
         <Link to="/pricing">Pricing</Link>
         <Link to="/learn">Learn</Link>
         <Link to="/community">Community</Link>
