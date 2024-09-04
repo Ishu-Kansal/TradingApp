@@ -13,6 +13,7 @@ import matplotlib.dates as mdates
 import io
 
 import pandas_market_calendars as mcal
+from py_vollib_vectorized import price_dataframe
 
 
 matplotlib.use('Agg')
@@ -393,3 +394,40 @@ def runMonteCarlo(ticker, useHistorical, durationHistorical, endtime, pctOTM, nu
     print(f'--------{time.time()-starttime} seconds--------')
     
     return dp
+
+# Extra Options Analysis Tools
+
+def getOptionsDataWithGreeks(stock: yf.Ticker, exp: str, iRate: float):
+    calls = stock.option_chain(exp).calls
+    puts = stock.option_chain(exp).puts
+    stock_price = stock.fast_info.last_price
+    
+    nyse = mcal.get_calendar('NYSE')
+    today = datetime.now().strftime("%Y-%m-%d")
+    daysToExp = nyse.schedule(start_date=today, end_date=exp)
+    
+    colsToSelect =  ['contractSymbol','lastTradeDate','strike','lastPrice','volume','openInterest','impliedVolatility']
+    calls = calls[colsToSelect]
+    puts = puts[colsToSelect]
+    
+    calls['Flag'] = 'c'
+    calls['S'] = stock_price
+    time_to_exp = len(daysToExp) / 252
+    calls['tte'] = time_to_exp
+    calls['R'] = iRate
+    price_dataframe(calls, flag_col='Flag', underlying_price_col='S', strike_col='strike', annualized_tte_col='tte',
+                     riskfree_rate_col='R', sigma_col='impliedVolatility', model='black_scholes', inplace=True)
+    
+    puts['Flag'] = 'c'
+    puts['S'] = stock_price
+    puts['tte'] = time_to_exp
+    puts['R'] = iRate
+    price_dataframe(puts, flag_col='Flag', underlying_price_col='S', strike_col='strike', annualized_tte_col='tte',
+                    riskfree_rate_col='R', sigma_col='impliedVolatility', model='black_scholes', inplace=True)
+    
+    greekCols = ['contractSymbol','lastTradeDate','strike','lastPrice','volume','openInterest','impliedVolatility', 'delta', 'gamma', 'theta', 'rho', 'vega']
+    calls = calls[greekCols]
+    puts = puts[greekCols]
+    
+    return {'calls': calls, 'puts': puts}
+  

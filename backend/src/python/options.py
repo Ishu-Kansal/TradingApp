@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from sqlalchemy import text
 import yfinance as yf
 import json
 import logging
@@ -11,6 +12,8 @@ from scipy.stats import norm
 
 import pandas_market_calendars as mcal
 import optionsHelpers
+
+from psql import engine
 
 
 app = Flask(__name__)
@@ -166,8 +169,97 @@ def mcsimulator():
     
     return jsonify(res)
     
+@app.route('/optionsgreeks', methods=['POST'])
+def optionsGreeks():
+    data = request.get_json()
+    ticker = data['ticker']
+    exp = data['expiration']
     
+    stock = yf.Ticker(ticker)
+    iRate = yf.Ticker('^IRX').fast_info.last_price / 100
     
+    greeksChains = optionsHelpers.getOptionsDataWithGreeks(stock, exp, iRate)
+    
+    retDict = {'calls': greeksChains['calls'].to_json(orient='records', lines=True), 'puts': greeksChains['puts'].to_json(orient='records', lines=True)}
+    
+    return jsonify(retDict)    
+
+@app.route('/updategreeks', methods=['POST'])
+def updateGreeks():
+    data = request.get_json()
+    ticker = data['ticker']
+    exp = data['expiration']
+    
+    stock = yf.Ticker(ticker)
+    iRate = yf.Ticker('^IRX').fast_info.last_price / 100
+    
+    greeksChains = optionsHelpers.getOptionsDataWithGreeks(stock, exp, iRate)
+    
+    with engine.begin() as conn:
+        # temp table
+        greeksChains['calls'].to_sql('temp_table', conn, index=False, if_exists='replace')
+
+        # create sql query
+        sql = text(f"""
+            WITH upsert AS (
+                INSERT INTO "PaperTrading"."OptionsData" ("contractSymbol", "lastTradeDate", strike, "lastPrice", volume, "openInterest", "impliedVolatility", delta, gamma, theta, rho, vega)
+                SELECT "contractSymbol", "lastTradeDate", strike, "lastPrice", volume, "openInterest", "impliedVolatility", delta, gamma, theta, rho, vega FROM temp_table
+                ON CONFLICT ("contractSymbol") 
+                DO UPDATE SET 
+                    "lastTradeDate" = EXCLUDED."lastTradeDate",
+                    "lastPrice" = EXCLUDED."lastPrice",
+                    volume = EXCLUDED.volume,
+                    "openInterest" = EXCLUDED."openInterest",
+                    "impliedVolatility" = EXCLUDED."impliedVolatility",
+                    delta = EXCLUDED.delta,
+                    gamma = EXCLUDED.gamma,
+                    theta = EXCLUDED.theta,
+                    rho = EXCLUDED.rho,
+                    vega = EXCLUDED.vega
+                RETURNING 1
+            )
+            SELECT COUNT(*) FROM upsert
+        """)
+
+        result = conn.execute(sql)
+        updatedCount = result.scalar()
+
+        # drop temp
+        conn.execute(text("DROP TABLE temp_table;"))
+    
+    with engine.begin() as conn:
+        # temp table
+        greeksChains['puts'].to_sql('temp_table', conn, index=False, if_exists='replace')
+
+        # create query
+        sql = text(f"""
+            WITH upsert AS (
+                INSERT INTO "PaperTrading"."OptionsData" ("contractSymbol", "lastTradeDate", strike, "lastPrice", volume, "openInterest", "impliedVolatility", delta, gamma, theta, rho, vega)
+                SELECT "contractSymbol", "lastTradeDate", strike, "lastPrice", volume, "openInterest", "impliedVolatility", delta, gamma, theta, rho, vega FROM temp_table
+                ON CONFLICT ("contractSymbol") 
+                DO UPDATE SET 
+                    "lastTradeDate" = EXCLUDED."lastTradeDate",
+                    "lastPrice" = EXCLUDED."lastPrice",
+                    volume = EXCLUDED.volume,
+                    "openInterest" = EXCLUDED."openInterest",
+                    "impliedVolatility" = EXCLUDED."impliedVolatility",
+                    delta = EXCLUDED.delta,
+                    gamma = EXCLUDED.gamma,
+                    theta = EXCLUDED.theta,
+                    rho = EXCLUDED.rho,
+                    vega = EXCLUDED.vega
+                RETURNING 1
+            )
+            SELECT COUNT(*) FROM upsert
+        """)
+
+        result = conn.execute(sql)
+        updatedCount += result.scalar()
+
+        # drop temp
+        conn.execute(text("DROP TABLE temp_table;"))
+            
+    return {"updatedCount": updatedCount}
 
 if __name__ == "__main__":
     app.run(port=5500, threaded=True, debug=True)

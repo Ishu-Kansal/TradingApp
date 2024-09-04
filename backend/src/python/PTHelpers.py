@@ -1,3 +1,4 @@
+import time
 from psql import conn
 
 
