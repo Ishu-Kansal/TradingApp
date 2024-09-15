@@ -50,7 +50,7 @@ body {
 
 /* Section styles */
 .section {
-  padding: 100px 20px; /* Adds space around the content */
+  padding: 100px 0px; /* Adds space around the content */
   min-height: 200px; /* Each section takes up at least the full viewport height */
   display: flex;
   align-items: center;
@@ -131,7 +131,9 @@ body {
 }
 
 .tickers {
-  background-color: #6a00ff;
+  background-color: #000000;
+  max-height: 100px;
+  padding: 0px;
 }
 
 .section-3 {

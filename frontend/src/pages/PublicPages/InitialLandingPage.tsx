@@ -1,5 +1,6 @@
 import "../../styles/PublicStyles/InitialLandingPage.css";
 import landingPagePhoto2 from "../../assets/landingPagePhoto2.jpg";
+import TickerTape from "../../components/PublicComponents/TickerTape";
 
 function InitialLandingPage() {
   return (
@@ -20,7 +21,9 @@ function InitialLandingPage() {
           </a>
         </div>
       </div>
-      <div className="section tickers">tickers</div>
+      <div className="section tickers">
+        <TickerTape />
+      </div>
       <div className="section section-3">css makes me wanna kms</div>
     </div>
   );

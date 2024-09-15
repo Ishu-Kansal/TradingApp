@@ -13,6 +13,7 @@ import ProfitCalc from "./pages/UserPages/ProfitCalc.tsx";
 import PricingPage from "./pages/PublicPages/PricingPage.tsx";
 import HVCharts from "./pages/UserPages/HVCharts.tsx";
 import FeaturePage from "./pages/PublicPages/FeaturePage.tsx";
+import ScrollToTop from "./components/ScrollToTop.tsx";
 
 function App() {
   const client = new ApolloClient({
@@ -24,6 +25,7 @@ function App() {
     <ApolloProvider client={client}>
       <div className="App">
         <Router>
+          <ScrollToTop />
           <NavBar />
           <Routes>
             <Route path="/" element={<InitialLandingPage />} />

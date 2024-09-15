@@ -1,0 +1,22 @@
+[
+  { "symbol": "AAPL", "price": 175.64, "action": 1 },
+  { "symbol": "GOOG", "price": 2843.12, "action": 0 },
+  { "symbol": "TSLA", "price": 750.23, "action": 1 },
+  { "symbol": "MSFT", "price": 298.45, "action": 0 },
+  { "symbol": "AMZN", "price": 3342.88, "action": 1 },
+  { "symbol": "NFLX", "price": 511.23, "action": 0 },
+  { "symbol": "NVDA", "price": 645.33, "action": 1 },
+  { "symbol": "FB", "price": 369.45, "action": 0 },
+  { "symbol": "BABA", "price": 158.72, "action": 1 },
+  { "symbol": "V", "price": 231.56, "action": 1 },
+  { "symbol": "JPM", "price": 158.23, "action": 0 },
+  { "symbol": "UNH", "price": 409.12, "action": 1 },
+  { "symbol": "DIS", "price": 178.34, "action": 0 },
+  { "symbol": "MA", "price": 340.23, "action": 1 },
+  { "symbol": "HD", "price": 328.89, "action": 0 },
+  { "symbol": "PYPL", "price": 293.12, "action": 1 },
+  { "symbol": "ADBE", "price": 622.35, "action": 1 },
+  { "symbol": "CRM", "price": 271.29, "action": 0 },
+  { "symbol": "INTC", "price": 55.63, "action": 1 },
+  { "symbol": "CSCO", "price": 56.45, "action": 0 }
+]

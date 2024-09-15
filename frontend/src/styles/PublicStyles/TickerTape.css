@@ -1,0 +1,30 @@
+:root {
+  --symsize: 3em;
+}
+
+.ticker-item {
+  padding: 0 40px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.stock-symbol {
+  font-weight: bold;
+  font-size: var(--symsize);
+  margin-right: 10px;
+  color: #fff;
+}
+
+.stock-price-positive {
+  color: #00ff00; /* Use a color to differentiate the price */
+  font-size: var(--symsize);
+}
+
+.stock-price-negative {
+  color: rgb(255, 43, 65); /* Use a color to differentiate the price */
+  font-size: var(--symsize);
+}
