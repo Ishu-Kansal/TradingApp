@@ -437,10 +437,10 @@ def getOptionsDataWithGreeks(stock: yf.Ticker, exp: str, iRate: float):
 def getTickerTapeStocks():
     tickerTape = redis_client.get("tickerTape")
     if tickerTape is None:
+        tickers = ['NVDA', 'GOOGL', 'AAPL', 'TSLA', 'MSFT', 'META', 'AMZN', 'AMD', 'INTC', 'MSTR', 'GS', 'V', 'SPY', 'QQQ']
+        prices = []
+        openPositive = []
         for ticker in tickers:
-            tickers = ['NVDA', 'GOOGL', 'AAPL', 'TSLA', 'MSFT', 'META', 'AMZN', 'AMD', 'INTC', 'MSTR', 'GS', 'V', 'SPY', 'QQQ']
-            prices = []
-            openPositive = []
             stock = yf.Ticker(ticker)
             prices.append(round(stock.fast_info.last_price, 2))
             if(stock.fast_info.last_price > stock.fast_info.regular_market_previous_close):
