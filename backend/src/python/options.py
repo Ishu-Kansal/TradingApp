@@ -261,6 +261,11 @@ def updateGreeks():
             
     return {"updatedCount": updatedCount}
 
+@app.route('/gettickertape', methods=['POST'])
+def getTickerTape():
+    stocksData = optionsHelpers.getTickerTapeStocks()
+    return json.dumps(stocksData)
+
 if __name__ == "__main__":
     app.run(port=5500, threaded=True, debug=True)
 

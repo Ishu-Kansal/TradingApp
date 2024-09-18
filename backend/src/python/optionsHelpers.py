@@ -15,6 +15,8 @@ import io
 import pandas_market_calendars as mcal
 from py_vollib_vectorized import price_dataframe
 
+from yfinanceData import redis_client
+
 
 matplotlib.use('Agg')
 
@@ -430,4 +432,32 @@ def getOptionsDataWithGreeks(stock: yf.Ticker, exp: str, iRate: float):
     puts = puts[greekCols]
     
     return {'calls': calls, 'puts': puts}
-  
+
+# Get Most Updated Tickers
+def getTickerTapeStocks():
+    tickerTape = redis_client.get("tickerTape")
+    if tickerTape is None:
+        for ticker in tickers:
+            tickers = ['NVDA', 'GOOGL', 'AAPL', 'TSLA', 'MSFT', 'META', 'AMZN', 'AMD', 'INTC', 'MSTR', 'GS', 'V', 'SPY', 'QQQ']
+            prices = []
+            openPositive = []
+            stock = yf.Ticker(ticker)
+            prices.append(round(stock.fast_info.last_price, 2))
+            if(stock.fast_info.last_price > stock.fast_info.regular_market_previous_close):
+                openPositive.append(1)
+            else: openPositive.append(0)
+            
+        stocksData = {"tickers": tickers, "prices": prices, "direction": openPositive}
+        grouped_data = [
+            {"ticker": a1, "price": a2, "action": a3}
+            for a1, a2, a3 in zip(stocksData["tickers"], stocksData["prices"], stocksData["direction"])
+        ]
+        redis_client.set("tickerTape", json.dumps(grouped_data), ex=60)
+        
+        return grouped_data
+    
+    else:
+        return json.loads(tickerTape)
+    
+    
+    
