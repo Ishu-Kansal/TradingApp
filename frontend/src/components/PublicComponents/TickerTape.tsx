@@ -36,7 +36,8 @@ const TickerTape = () => {
               stock.action > 0 ? "stock-price-positive" : "stock-price-negative"
             }
           >
-            ${stock.price}
+            ${stock.price + " "}
+            {stock.action > 0 ? "\u25B2" : "\u25BC"}
           </span>
         </div>
       ))}

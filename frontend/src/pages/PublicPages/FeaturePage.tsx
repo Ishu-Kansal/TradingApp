@@ -10,12 +10,12 @@ function FeaturePage() {
   const optionsTableDescription =
     "Explore a wide range of options designed to meet your specific needs and preferences. Find the perfect solution with ease, ensuring you make informed choices that truly fit your requirements.";
   const orderbookDescription =
-    "Experience seamless order management with our Peer-to-Peer system, delivering reliability, consistency, and lightning-fast fulfillment—completely hassle-free!";
+    "Experience seamless order management with our Peer-to-Peer system, delivering reliability, consistency, and lightning-fast fulfillment, completely hassle-free!";
 
   const profitCalcDescription =
-    "Take your options strategy to the next level—accurately predict pricing with our advanced tools, and customize your IV series for unparalleled insight and control like never before.";
+    "Take your options strategy to the next level! Accurately predict pricing with our advanced tools, and customize your IV series for unparalleled insight and control like never before.";
   const ivGraphDescription =
-    "See the bigger picture—plot historical volatility with stock prices to uncover how major market events impact stock behavior and reveal key trends.";
+    "Plot historical volatility with stock prices to uncover how major market events impact stock behavior and reveal key trends.";
 
   return (
     <div className="featurePage">

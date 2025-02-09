@@ -178,6 +178,8 @@ def getHV(ticker, duration, windowSize):
 def getPastEarningsDates(ticker):
     stock = yf.Ticker(ticker)   
     earnings = stock.get_earnings_dates()
+    if(earnings is None):
+        return []
     return earnings.index.strftime('%Y-%m-%d').tolist()
    
 #Generate SVGs from matplotlib for historical volatility   
@@ -252,16 +254,16 @@ def getIMG2(ticker, duration, windowSize):
    
 def getData(ticker, duration, windowSize):
     df = getHV(ticker, duration, windowSize)  
-    earnings = getPastEarningsDates(ticker)
+    # earnings = getPastEarningsDates(ticker)
     datesFull = df['history']
     vals = df['hv']
     history = df['stock_history']
     
     earningsInTime = []
     
-    for earning in earnings:
-        if earning in datesFull:
-            earningsInTime.append(earning)
+    # for earning in earnings:
+    #     if earning in datesFull:
+    #         earningsInTime.append(earning)
     
     retObj = {
         "dates": datesFull,
@@ -400,9 +402,12 @@ def runMonteCarlo(ticker, useHistorical, durationHistorical, endtime, pctOTM, nu
 # Extra Options Analysis Tools
 
 def getOptionsDataWithGreeks(stock: yf.Ticker, exp: str, iRate: float):
+    start = time.time()
     calls = stock.option_chain(exp).calls
     puts = stock.option_chain(exp).puts
     stock_price = stock.fast_info.last_price
+    print(f'time to get info: {time.time() - start}\n')
+    newTime = time.time()
     
     nyse = mcal.get_calendar('NYSE')
     today = datetime.now().strftime("%Y-%m-%d")
@@ -430,6 +435,7 @@ def getOptionsDataWithGreeks(stock: yf.Ticker, exp: str, iRate: float):
     greekCols = ['contractSymbol','lastTradeDate','strike','lastPrice','volume','openInterest','impliedVolatility', 'delta', 'gamma', 'theta', 'rho', 'vega']
     calls = calls[greekCols]
     puts = puts[greekCols]
+    print(f'time to get convert: {time.time() - newTime}\n')
     
     return {'calls': calls, 'puts': puts}
 

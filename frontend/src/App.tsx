@@ -14,6 +14,7 @@ import PricingPage from "./pages/PublicPages/PricingPage.tsx";
 import HVCharts from "./pages/UserPages/HVCharts.tsx";
 import FeaturePage from "./pages/PublicPages/FeaturePage.tsx";
 import ScrollToTop from "./components/ScrollToTop.tsx";
+import AboutPage from "./pages/PublicPages/AboutPage.tsx";
 
 function App() {
   const client = new ApolloClient({
@@ -39,6 +40,7 @@ function App() {
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/hist-iv-charts" element={<HVCharts />} />
             <Route path="/features" element={<FeaturePage />} />
+            <Route path="/about" element={<AboutPage />} />
           </Routes>
         </Router>
       </div>

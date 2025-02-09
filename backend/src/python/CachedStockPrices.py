@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import time
 import flask
 from flask import Flask, json
 import redis
@@ -18,7 +19,7 @@ q = Queue(connection=Redis())
 scheduler = Scheduler(queue=q, connection=q.connection)
 
 #TODO: Use some sort of API or DB to get all tickers to update
-ticker_list = ['NVDA', 'AAPL', 'META', 'AMD', 'TSMC', 'AMZN', 'TSLA', 'GOOGL', 'MSFT']
+ticker_list = ['NVDA', 'AAPL', 'META', 'AMD', 'TSM', 'AMZN', 'TSLA', 'GOOGL', 'MSFT']
 
 SCALING_FACTOR = 0.02
 EXP_TIME_SECONDS = 10
@@ -45,10 +46,13 @@ def updateTicker(ticker: str):
             return {"status": "HOLD", "ticker": ticker, "price": stock_price}
         
 def updateOptions(ticker: str, exp: str):
+    start = time.time()
     stock = yf.Ticker(ticker)
     iRate = yf.Ticker('^IRX').fast_info.last_price / 100
-    
+    exps = stock.options
+    greekstart = time.time()
     greeksChains = optionsHelpers.getOptionsDataWithGreeks(stock, exp, iRate)
+    print(f'\n\n\n\ntime to get greeks: {time.time() - greekstart}\n')
     
     with engine.begin() as conn:
         # temp table
@@ -113,6 +117,8 @@ def updateOptions(ticker: str, exp: str):
 
         # drop temp
         conn.execute(text("DROP TABLE temp_table;"))
+    
+    print(f'time to update ticker {ticker}: {time.time() - start}, updated {updatedCount} rows\n\n\n\n')
             
     return {"updatedCount": updatedCount}
 
@@ -145,17 +151,27 @@ def periodic_task():
 def home():
     return "Flask server is running, and background tasks are scheduled every 10 seconds."
 
-                
-if __name__ == "__main__":
+import logging
+logger = logging.getLogger('yfinance')
+logger.disabled = True
+logger.propagate = False
+logging.disable()
+
+start = time.time()
+for ticker in ticker_list:
+    # print(f'\n\nTICKER: {ticker}\n\n')
+    updateOptions(ticker, '2024-10-18')
+print('total time: ', time.time() - start)                
+# if __name__ == "__main__":
     # Schedule the task to run every 10 seconds
-    scheduler.schedule(
-        scheduled_time=datetime.now(), # first run 10 seconds from now
-        func=periodic_task(),                   # function to be queued
-        interval=10,                          # time in seconds between each run
-        repeat=None                           # repeat forever
-    )
-    
+    # scheduler.schedule(
+    #     scheduled_time=datetime.now(), # first run 10 seconds from now
+    #     func=periodic_task(),                   # function to be queued
+    #     interval=10,                          # time in seconds between each run
+    #     repeat=None                           # repeat forever
+    # )
+
     # Run the Flask server
-    app.run(port=5000, debug=True)
+    # app.run(port=5000, debug=True)
 
 
