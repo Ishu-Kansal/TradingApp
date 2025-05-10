@@ -465,5 +465,80 @@ def getTickerTapeStocks():
     else:
         return json.loads(tickerTape)
     
+# Get Puts and Calls OI for Stock
+def getOIData(tick: str, exp: str):
+    tick = 'nvda'
+    stock = yf.Ticker(tick)
+    exp = '2025-03-14'
+    options_chain = stock.option_chain(exp)
+    print("options data: ", options_chain, '\n\n\n\n\n')
+    vix_calls = options_chain.calls
+    vix_puts = options_chain.puts
+    
+    strikes = (vix_calls['strike']).to_list()  
+    strikes = strikes + vix_puts['strike'].to_list()
+    strikes = list(set(strikes))
+    strikes.sort()
+    
+    totalOIC = vix_calls['openInterest'].sum()
+    # print(totalOIC)
+    
+    retDict = dict()
+    
+    if(totalOIC > 100):
+        calls_interest = np.zeros(len(strikes))
+        puts_interest = np.zeros(len(strikes))
+        
+        for i in range(len(strikes)):
+            if(vix_calls['strike'].isin([strikes[i]]).any()):
+                calls_interest[i] = vix_calls.loc[vix_calls['strike'] == strikes[i], 'openInterest'].iloc[0]
+                # print(vix_calls.loc[vix_calls['strike'] == strikes[i], 'openInterest'].iloc[0])
+            else:
+                calls_interest[i] = 0
+            
+            if(vix_puts['strike'].isin([strikes[i]]).any()):
+                puts_interest[i] = vix_puts.loc[vix_puts['strike'] == strikes[i], 'openInterest'].iloc[0]
+                # print(vix_calls.loc[vix_calls['strike'] == strikes[i], 'openInterest'].iloc[0])
+            else:
+                puts_interest[i] = 0
+        
+        retDict['strikes'] = strikes
+        retDict['calls'] = calls_interest.tolist()
+        retDict['puts'] = puts_interest.tolist()
+        retDict['data_available'] = True
+    else:
+        calls_interest = np.zeros(len(strikes))
+        puts_interest = np.zeros(len(strikes))
+        
+        for i in range(len(strikes)):
+            if(vix_calls['strike'].isin([strikes[i]]).any()):
+                interest = vix_calls.loc[vix_calls['strike'] == strikes[i], 'volume'].iloc[0]
+                if(interest == interest):
+                    calls_interest[i] = interest
+                else:
+                    calls_interest[i] = 0
+                # print(vix_calls.loc[vix_calls['strike'] == strikes[i], 'openInterest'].iloc[0])
+            else:
+                calls_interest[i] = 0
+            
+            if(vix_puts['strike'].isin([strikes[i]]).any()):
+                interest = vix_puts.loc[vix_puts['strike'] == strikes[i], 'volume'].iloc[0]
+                if(interest == interest):
+                    puts_interest[i] = interest
+                else:
+                    puts_interest[i] = 0
+                # print(vix_calls.loc[vix_calls['strike'] == strikes[i], 'openInterest'].iloc[0])
+            else:
+                puts_interest[i] = 0
+        
+        retDict['strikes'] = strikes
+        retDict['calls'] = calls_interest.tolist()
+        retDict['puts'] = puts_interest.tolist()
+        retDict['data_available'] = False
+    
+    print(retDict)
+    return retDict
+    
+    
     
     

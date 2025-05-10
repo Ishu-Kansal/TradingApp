@@ -266,6 +266,14 @@ def getTickerTape():
     stocksData = optionsHelpers.getTickerTapeStocks()
     return json.dumps(stocksData)
 
+@app.route('/getOI', methods=['POST'])
+def getOI():
+    input = request.get_json()
+    ticker = input['ticker']
+    exp = input['expiration']
+    print(type(exp), '\n\n\n')
+    retDict = optionsHelpers.getOIData(ticker, exp)
+    return json.dumps(retDict)
 
 if __name__ == "__main__":
     app.run(port=5500, threaded=True, debug=True)
