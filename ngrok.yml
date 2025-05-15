@@ -1,5 +1,10 @@
+version: 2
+authtoken: 2soVYrtrlCbt6XuDsePsIKEl4Wn_nFjfx9C1vfMzoL957k8s
+dns_resolver_ips:
+ - 1.1.1.1
+ - 8.8.8.8
 tunnels:
   frontend:
     addr: 5173
     proto: http
-    domain: smart-heartily-kit.ngrok-free.app # Replace with your actual reserved ngrok domain
+    domain: smart-heartily-kit.ngrok-free.app
