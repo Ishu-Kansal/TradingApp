@@ -19,9 +19,13 @@ const app = express();
 
 const port = 4500;
 
+import dotenv from "dotenv"
+dotenv.config();
+const BASE_URL=process.env.FRONTEND_SERVER_URL ;
+
 let corsOptions = {
   credentials: "true",
-  origin: ["http://localhost:4500", "http://localhost:5173"],
+  origin: ["http://localhost:4500", "http://localhost:5173", BASE_URL],
   allowedHeaders: "*",
 };
 app.use(json());

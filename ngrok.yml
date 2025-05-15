@@ -1,0 +1,5 @@
+tunnels:
+  frontend:
+    addr: 5173
+    proto: http
+    domain: smart-heartily-kit.ngrok-free.app # Replace with your actual reserved ngrok domain

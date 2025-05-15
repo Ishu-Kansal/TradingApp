@@ -5,10 +5,12 @@ import { Link, useNavigate } from "react-router-dom";
 import "../../styles/PublicStyles/RegisterForm.css";
 import { Alert, Button, TextField } from "@mui/material";
 
+const BASE_URL_LOGIN = import.meta.env.VITE_LOGINSERVER_URL;
+
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 //const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const PWD_REGEX = /^[a-zA-Z0-9]{0,15}$/;
-const REGISTER_URL = "http://localhost:4500/users";
+const REGISTER_URL = BASE_URL_LOGIN + "/users";
 
 function RegistrationForm2() {
   const navigate = useNavigate();

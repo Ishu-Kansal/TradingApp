@@ -4,8 +4,11 @@ import { Button, TextField } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import "../../styles/PublicStyles/LoginForm.css";
 
+
+const BASE_URL = import.meta.env.VITE_LOGINSERVER_URL;
+
 function LoginForm() {
-  const LOGIN_URL = "http://localhost:4500/login";
+  const LOGIN_URL = BASE_URL + "/login";
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

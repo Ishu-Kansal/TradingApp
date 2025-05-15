@@ -3,6 +3,9 @@ import axios from "axios";
 import { useState } from "react";
 import { HeatMapGrid } from "react-grid-heatmap";
 
+
+const BASE_URL = import.meta.env.VITE_BASE_BACKEND_URL;
+
 function ProfitCalc() {
   const [symbol, setSymbol] = useState("");
   const [expDate, setExpDate] = useState("");
@@ -25,7 +28,7 @@ function ProfitCalc() {
   const handleSearchStock = async () => {
     const dataIn = { symbol: symbol };
 
-    fetch("http://127.0.0.1:5500/options-exp", {
+    fetch(BASE_URL+ "/options-exp", {
       method: "post",
       body: JSON.stringify(dataIn),
       headers: { "Content-Type": "application/json" },
@@ -54,7 +57,7 @@ function ProfitCalc() {
     };
     console.log("sending data: ", dataIn);
     axios({
-      url: "http://127.0.0.1:5500/options-profit-calculator",
+      url: BASE_URL+ "/options-profit-calculator",
       method: "POST",
       headers: { "Content-Type": "application/json" },
       data: dataIn,

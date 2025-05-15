@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import dotenv from "dotenv"
+
+const BASE_URL_LOGIN = import.meta.env.VITE_LOGINSERVER_URL;
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 //const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const PWD_REGEX = /^[a-zA-Z0-9]{0,15}$/;
-const REGISTER_URL = "http://localhost:4500/users";
+const REGISTER_URL = BASE_URL_LOGIN + "/users";
 
 function RegistrationForm() {
   const userRef = useRef();

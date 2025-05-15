@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 
 import "../../styles/UserStyles/pages/HVChartstyles.css";
+const BASE_URL = import.meta.env.VITE_BASE_BACKEND_URL;
 
 function HVCharts() {
   const [resData, setResData] = useState({
@@ -36,7 +37,7 @@ function HVCharts() {
   function getData() {
     console.log("duration: ", duration);
     axios({
-      url: "http://127.0.0.1:5500//historical-volatility-graphs",
+      url: BASE_URL + "//historical-volatility-graphs",
       method: "POST",
       headers: { "Content-Type": "application/json" },
       data: {

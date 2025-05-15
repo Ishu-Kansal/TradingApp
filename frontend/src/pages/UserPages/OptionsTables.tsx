@@ -5,11 +5,13 @@ import { useState } from "react";
 import OptionsTable from "../../components/UserComponents/OptionsTable";
 import "../../styles/UserStyles/pages/OptionsTables.css";
 
+const BASE_URL = import.meta.env.VITE_BASE_BACKEND_URL;
+
 function OptionsTables() {
   const handleSearchStock = async () => {
     const dataIn = { symbol: inputTicker };
 
-    fetch("http://127.0.0.1:5500/options-exp", {
+    fetch(BASE_URL + "/options-exp", {
       method: "post",
       body: JSON.stringify(dataIn),
       headers: { "Content-Type": "application/json" },
@@ -29,7 +31,7 @@ function OptionsTables() {
   const handleSearchOptions = async () => {
     const dataIn = { symbol: inputTicker, exp_date: inputExp };
 
-    fetch("http://127.0.0.1:5500/options-calls", {
+    fetch(BASE_URL + "/options-calls", {
       method: "post",
       body: JSON.stringify(dataIn),
       headers: { "Content-Type": "application/json" },
@@ -44,7 +46,7 @@ function OptionsTables() {
         console.log(error);
       });
 
-    fetch("http://127.0.0.1:5500/options-puts", {
+    fetch(BASE_URL+"/options-puts", {
       method: "post",
       body: JSON.stringify(dataIn),
       headers: { "Content-Type": "application/json" },
