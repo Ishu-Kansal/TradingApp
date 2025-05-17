@@ -1,7 +1,7 @@
 .featurePage {
-  padding-top: 90px; /* Adjust for the fixed navbar */
+  padding-top: 90px;
   padding-bottom: 20px;
-  text-align: center; /* Center the title */
+  text-align: center;
   background-color: rgb(172, 255, 219);
 }
 
@@ -17,5 +17,3 @@
   align-items: center;
   justify-content: center;
 }
-
-/* Individual feature styles */

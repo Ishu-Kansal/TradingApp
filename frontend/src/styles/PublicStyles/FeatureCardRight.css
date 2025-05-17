@@ -6,12 +6,12 @@
   max-height: 300px;
   text-overflow: clip;
 
-  background-color: #ffffff; /* Background color for the feature box */
-  border-radius: 30px; /* Rounded corners */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4); /* Shadow for depth */
+  background-color: #ffffff;
+  border-radius: 30px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
   padding: 20px;
-  margin: 20px 0; /* Space between each feature */
-  text-align: left; /* Center the text inside the feature */
+  margin: 20px 0;
+  text-align: left;
 }
 
 .feature-content-right {
@@ -20,9 +20,9 @@
 
 .feature-image-right {
   position: absolute;
-  background-size: cover; /* Make the image cover the entire section */
-  background-position: center; /* Center the background image */
-  background-repeat: no-repeat; /* Prevent the background image from repeating */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 
   transform: translate(-10%, -2%);
   right: 5%;
@@ -45,10 +45,9 @@
   position: absolute;
   padding-left: 50px;
   padding-top: 50px;
-  left: 5%; /* 25% from the left edge of the section */
+  left: 5%;
 }
 
-/* Optional: Add smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
