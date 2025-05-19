@@ -443,7 +443,7 @@ def getOptionsDataWithGreeks(stock: yf.Ticker, exp: str, iRate: float):
 def getTickerTapeStocks():
     tickerTape = redis_client.get("tickerTape")
     if tickerTape is None:
-        tickers = ['NVDA', 'GOOGL', 'AAPL', 'TSLA', 'MSFT', 'META', 'AMZN', 'AMD', 'INTC', 'MSTR', 'GS', 'V', 'SPY', 'QQQ']
+        tickers = ['NVDA', 'GOOGL', 'AAPL', 'TSLA', 'MSFT', 'META', 'AMZN', 'AMD', 'TSM', 'INTC', 'MSTR', 'JPM', 'V', 'SPY', 'QQQ']
         prices = []
         openPositive = []
         for ticker in tickers:
@@ -539,6 +539,82 @@ def getOIData(tick: str, exp: str):
     print(retDict)
     return retDict
     
+# Another function to get options greeks, based on exp and type = c, p, a
+def getOptionsTableGreeks(ticker: str, exp: str, type: str):
+    type = type.lower()
+    if(type not in ["c", "p", "a"]):
+        return {}
+
+    ticker = ticker.lower()
+    stock = yf.Ticker(ticker)
     
+    #TODO: redefine rate to use cached info
+    rate = yf.Ticker("^IRX").fast_info.last_price
+    iRate = rate / 100
+    stock_price = stock.fast_info.last_price
+    calls = None
+    puts = None
     
+    nyse = mcal.get_calendar('NYSE')
+    today = datetime.now().strftime("%Y-%m-%d")
+    daysToExp = nyse.schedule(start_date=today, end_date=exp)
+    colsToSelect =  ['contractSymbol','lastTradeDate','strike','lastPrice','volume','openInterest','impliedVolatility']
+    greekCols = ['contractSymbol','lastTradeDate','strike','lastPrice','volume','openInterest','impliedVolatility', 'delta', 'gamma', 'theta', 'rho', 'vega']
+
+    if(type == 'c' or type == "a"):
+        calls = stock.option_chain(exp).calls
+        calls = calls[colsToSelect]
+        
+        calls['Flag'] = 'c'
+        calls['S'] = stock_price
+        time_to_exp = len(daysToExp) / 252
+        calls['tte'] = time_to_exp
+        calls['R'] = iRate
+        price_dataframe(calls, flag_col='Flag', underlying_price_col='S', strike_col='strike', annualized_tte_col='tte',
+                            riskfree_rate_col='R', sigma_col='impliedVolatility', price_col='lastPrice', model='black_scholes', inplace=True)
+        
+        calls = calls[greekCols]
+        
+        if(type == 'c'):
+            return {"curr_price": stock_price,"calls": calls}    
+
+ 
+    if(type == 'p' or type == "a"):
+        puts = stock.option_chain(exp).puts
+        puts = puts[colsToSelect]
+        puts['Flag'] = 'p'
+        puts['S'] = stock_price
+        puts['tte'] = time_to_exp
+        puts['R'] = iRate
+        price_dataframe(puts, flag_col='Flag', underlying_price_col='S', strike_col='strike', annualized_tte_col='tte',
+                        riskfree_rate_col='R', sigma_col='impliedVolatility', price_col='lastPrice', model='black_scholes', inplace=True)
+        puts = puts[greekCols]
+        
+        if(type == 'p'):
+            return {"curr_price": stock_price,"puts": puts}
     
+    return {"curr_price": stock_price,"calls": calls, "puts": puts}    
+    
+def getGammaExposure(ticker: str, exp: str):
+    data = getOptionsTableGreeks(ticker, exp, 'a')
+    
+    curr_price = data["curr_price"]
+    calls = data["calls"]
+    puts = data["puts"]
+    
+    callStrikes = calls['strike']
+    callGammas = calls['gamma']
+    callOI = calls['openInterest']
+    
+    putStrikes = puts['strike']
+    putGammas = puts['gamma']
+    putOI = puts['openInterest']
+    
+    rectDict = {}
+    rectDict["curr_price"] = curr_price
+    rectDict["callStrikes"] = callStrikes
+    rectDict["callGEX"] = callGammas * callOI
+    rectDict["putStrikes"] = putStrikes
+    rectDict["putGEX"] = putGammas * putOI
+    
+    return rectDict

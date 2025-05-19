@@ -5,8 +5,7 @@ import axios from "axios";
 
 const BASE_URL = import.meta.env.VITE_BASE_BACKEND_URL;
 const TickerTape = () => {
-  
-  const TICKER_URL = BASE_URL + "//gettickertape";
+  const TICKER_URL = BASE_URL + "/gettickertape";
 
   const [stocks, setStocks] = useState([{ ticker: "", price: 0, action: 0 }]);
 

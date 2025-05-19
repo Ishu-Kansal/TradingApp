@@ -275,6 +275,22 @@ def getOI():
     retDict = optionsHelpers.getOIData(ticker, exp)
     return json.dumps(retDict)
 
+@app.route("/get-gex", methods=['GET'])
+def getGEX():
+    input = request.get_json()
+    ticker = input['ticker']
+    exp = input['expiration']
+    
+    data = optionsHelpers.getGammaExposure(ticker, exp)
+    rectDict = {"curr_price": data["curr_price"], "callStrikes": data["callStrikes"].to_json(orient='records', lines=True),
+                "callGEX": data["callGEX"].to_json(orient='records', lines=True), 
+                "putStrikes": data["putStrikes"].to_json(orient='records', lines=True),
+                "putGEX": data["putGEX"].to_json(orient='records', lines=True)
+                }
+
+    return jsonify(rectDict), 200, {'Content-Type': 'application/json'}
+    
+
 if __name__ == "__main__":
     app.run(port=5500, threaded=True, debug=True)
 
