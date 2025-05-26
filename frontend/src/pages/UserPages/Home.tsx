@@ -40,6 +40,11 @@ function Home() {
           img_url={options_tables_img}
           path_url="/portfolio"
         />
+        <HomePageCard
+          description="Gamma Exposure"
+          img_url={options_tables_img}
+          path_url="/gex"
+        />
       </div>
     </div>
   );

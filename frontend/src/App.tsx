@@ -15,6 +15,7 @@ import HVCharts from "./pages/UserPages/HVCharts.tsx";
 import FeaturePage from "./pages/PublicPages/FeaturePage.tsx";
 import ScrollToTop from "./components/ScrollToTop.tsx";
 import AboutPage from "./pages/PublicPages/AboutPage.tsx";
+import GEX from "./pages/UserPages/GEX.tsx";
 
 function App() {
   const client = new ApolloClient({
@@ -41,6 +42,7 @@ function App() {
             <Route path="/hist-iv-charts" element={<HVCharts />} />
             <Route path="/features" element={<FeaturePage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/gex" element={<GEX />} />
           </Routes>
         </Router>
       </div>

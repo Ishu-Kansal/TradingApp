@@ -12,6 +12,7 @@ function NavBar() {
     "/portfolio",
     "/profit-calc",
     "/hist-iv-charts",
+    "/gex",
   ];
   return (
     <div>

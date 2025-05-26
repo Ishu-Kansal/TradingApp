@@ -602,13 +602,13 @@ def getGammaExposure(ticker: str, exp: str):
     calls = data["calls"]
     puts = data["puts"]
     
-    callStrikes = calls['strike']
-    callGammas = calls['gamma']
-    callOI = calls['openInterest']
+    callStrikes = calls['strike'].to_numpy()
+    callGammas = calls['gamma'].to_numpy()
+    callOI = calls['openInterest'].to_numpy()
     
-    putStrikes = puts['strike']
-    putGammas = puts['gamma']
-    putOI = puts['openInterest']
+    putStrikes = puts['strike'].to_numpy()
+    putGammas = puts['gamma'].to_numpy()
+    putOI = puts['openInterest'].to_numpy()
     
     rectDict = {}
     rectDict["curr_price"] = curr_price
