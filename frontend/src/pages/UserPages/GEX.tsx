@@ -1,6 +1,6 @@
 import { useState } from "react";
 import GexGraph from "../../components/UserComponents/GexGraph";
-import { GexGraphInput } from "../../components/UserComponents/GexGraph";
+import "../../styles/UserStyles/pages/GEX.css";
 import {
   Button,
   FormControl,
@@ -23,6 +23,9 @@ function GEX() {
   const [putStrikes, setPutStrikes] = useState([]);
   const [putGEX, setPutGEX] = useState([]);
   const [callGEX, setCallGEX] = useState([]);
+
+  const [displayTicker, setDisplayTicker] = useState("");
+  const [displayExp, setDisplayExp] = useState("");
 
   // change these methods
 
@@ -48,6 +51,8 @@ function GEX() {
 
   const handleSearchGex = async () => {
     const dataIn = { ticker: inputTicker, expiration: inputExp };
+    setDisplayExp(inputExp);
+    setDisplayTicker(inputTicker);
 
     fetch("http://127.0.0.1:5500/get-gex", {
       method: "post",
@@ -123,12 +128,17 @@ function GEX() {
         </span>
       </div>
       <div>
+        <h1 id="graph-title">
+          Gamma Exposure for {displayTicker.toUpperCase()} {displayExp}
+        </h1>
         <GexGraph
           stockPrice={stockPrice}
           callStrikes={callStrikes}
           putStrikes={putStrikes}
           callGEX={callGEX}
           putGEX={putGEX}
+          ticker={inputTicker}
+          exp={inputExp}
         />
       </div>
     </div>

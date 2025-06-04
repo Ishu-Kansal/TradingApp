@@ -7,6 +7,8 @@ export interface GexGraphInput {
   callStrikes: number[];
   putGEX: number[];
   putStrikes: number[];
+  ticker: string;
+  exp: string;
 }
 
 const tempData = {
@@ -114,9 +116,23 @@ function GexGraph(props: GexGraphInput) {
     options: {
       indexAxis: "y",
       plugins: {
-        title: {
-          display: true,
-          text: "Chart.js Bar Chart - Stacked",
+        annotation: {
+          annotations: {
+            stockPriceLine: {
+              type: "line",
+              yMin: props.stockPrice,
+              yMax: props.stockPrice,
+              borderColor: "black",
+              borderWidth: 2,
+              label: {
+                display: true,
+                content: `Stock: $${props.stockPrice.toFixed(2)}`,
+                position: "end",
+                backgroundColor: "rgba(0,0,0,0.7)",
+                color: "white",
+              },
+            },
+          },
         },
       },
       responsive: true,
@@ -133,16 +149,14 @@ function GexGraph(props: GexGraphInput) {
             display: true,
             text: "GEX",
             font: {
-              weight: "bold",
-              size: 14,
+              size: 30,
             },
           },
         },
         y: {
-          type: "category",
+          type: "linear",
           position: "left",
           stacked: true,
-          reverse: true,
           ticks: {
             font: {
               weight: "bold",
@@ -152,8 +166,7 @@ function GexGraph(props: GexGraphInput) {
             display: true,
             text: "Strike",
             font: {
-              weight: "bold",
-              size: 14,
+              size: 30,
             },
           },
         },
